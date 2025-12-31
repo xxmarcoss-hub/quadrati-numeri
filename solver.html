@@ -343,6 +343,7 @@
                     <div class="level-stats">
                         <span>Difficoltà: ${r.difficulty}</span>
                         <span>Quadrati: ${r.totalSquares}</span>
+                        ${r.trashSlots > 0 ? `<span>Cestino: ${r.trashSlots}</span>` : ''}
                         <span>Soluzioni: ${r.totalSolutions}</span>
                         ${r.totalSolutions > 0 ? `<span>Mosse: ${r.minMoves}-${r.maxMoves}</span>` : ''}
                     </div>

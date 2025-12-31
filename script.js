@@ -102,7 +102,9 @@ function composeOperations(content1, content2) {
 let gameState = {
     currentLevel: 0,
     squares: [],
-    draggedSquare: null
+    draggedSquare: null,
+    trashSlotsTotal: 0,
+    trashSlotsUsed: 0
 };
 
 // Elementi DOM
@@ -113,6 +115,9 @@ const btnReset = document.getElementById('btn-reset');
 const btnPrev = document.getElementById('btn-prev');
 const btnNext = document.getElementById('btn-next');
 const messageEl = document.getElementById('message');
+const trashContainer = document.getElementById('trash-container');
+const trashBin = document.getElementById('trash-bin');
+const trashCount = document.getElementById('trash-count');
 
 // Inizializzazione
 function init() {
@@ -149,6 +154,18 @@ function loadLevel(levelIndex) {
 
     const level = levels[levelIndex];
     levelNumber.textContent = `${levelIndex + 1} - ${level.name}`;
+
+    // Inizializza il cestino
+    gameState.trashSlotsTotal = level.trashSlots || 0;
+    gameState.trashSlotsUsed = 0;
+
+    // Mostra/nascondi cestino
+    if (gameState.trashSlotsTotal > 0) {
+        trashContainer.classList.remove('hidden');
+        trashBin.classList.remove('full');
+    } else {
+        trashContainer.classList.add('hidden');
+    }
 
     // Mescola i quadrati e creali
     const shuffledSquares = shuffleArray(level.squares);
@@ -297,10 +314,17 @@ function handleTouchMove(e) {
     document.querySelectorAll('.square.drag-over').forEach(sq => {
         sq.classList.remove('drag-over');
     });
+    trashBin.classList.remove('drag-over');
 
     const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
     if (elementBelow && elementBelow.classList.contains('square') && elementBelow !== touchDraggedSquare) {
         elementBelow.classList.add('drag-over');
+    }
+    // Evidenzia cestino se sopra
+    if (elementBelow && (elementBelow === trashBin || elementBelow.closest('.trash-bin'))) {
+        if (gameState.trashSlotsUsed < gameState.trashSlotsTotal) {
+            trashBin.classList.add('drag-over');
+        }
     }
 }
 
@@ -316,6 +340,14 @@ function handleTouchEnd(e) {
     }
 
     touchDraggedSquare.classList.remove('dragging');
+    trashBin.classList.remove('drag-over');
+
+    // Controlla se rilasciato sul cestino
+    if (elementBelow && (elementBelow === trashBin || elementBelow.closest('.trash-bin'))) {
+        trashSquare(touchDraggedSquare);
+        touchDraggedSquare = null;
+        return;
+    }
 
     if (elementBelow && elementBelow.classList.contains('square') && elementBelow !== touchDraggedSquare) {
         elementBelow.classList.remove('drag-over');
@@ -441,11 +473,38 @@ function removeSquare(square) {
     }, 300);
 }
 
+// Cestina un quadrato
+function trashSquare(square) {
+    // Verifica se ci sono slot disponibili
+    if (gameState.trashSlotsUsed >= gameState.trashSlotsTotal) {
+        return false;
+    }
+
+    gameState.trashSlotsUsed++;
+    trashBin.classList.add('shaking');
+    setTimeout(() => trashBin.classList.remove('shaking'), 300);
+
+    removeSquare(square);
+    checkWin();
+    return true;
+}
+
 // Aggiorna UI
 function updateUI() {
     squaresCount.textContent = gameState.squares.length;
     btnPrev.disabled = gameState.currentLevel === 0;
     btnNext.disabled = gameState.currentLevel === levels.length - 1;
+
+    // Aggiorna cestino
+    if (gameState.trashSlotsTotal > 0) {
+        const remaining = gameState.trashSlotsTotal - gameState.trashSlotsUsed;
+        trashCount.textContent = `${remaining}/${gameState.trashSlotsTotal}`;
+        if (remaining === 0) {
+            trashBin.classList.add('full');
+        } else {
+            trashBin.classList.remove('full');
+        }
+    }
 }
 
 // Verifica vittoria
@@ -507,6 +566,27 @@ function setupEventListeners() {
         }
         if (e.key === 'ArrowRight' && gameState.currentLevel < levels.length - 1) {
             loadLevel(gameState.currentLevel + 1);
+        }
+    });
+
+    // Eventi cestino - drag and drop
+    trashBin.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (gameState.trashSlotsUsed < gameState.trashSlotsTotal) {
+            trashBin.classList.add('drag-over');
+        }
+    });
+
+    trashBin.addEventListener('dragleave', () => {
+        trashBin.classList.remove('drag-over');
+    });
+
+    trashBin.addEventListener('drop', (e) => {
+        e.preventDefault();
+        trashBin.classList.remove('drag-over');
+        if (gameState.draggedSquare) {
+            trashSquare(gameState.draggedSquare);
+            gameState.draggedSquare = null;
         }
     });
 }
