@@ -91,11 +91,12 @@ function stateToCanonical(state) {
     return state.map(elementToString).sort().join(',');
 }
 
-// Genera tutte le mosse uniche da uno stato
-function getUniqueMoves(state) {
+// Genera tutte le mosse uniche da uno stato (incluse cestinazioni se disponibili)
+function getUniqueMoves(state, trashSlotsRemaining = 0) {
     const moves = [];
     const seenPairs = new Set();
 
+    // Mosse normali: combinazione di due elementi
     for (let i = 0; i < state.length; i++) {
         for (let j = i + 1; j < state.length; j++) {
             // Crea una chiave canonica per la coppia
@@ -106,9 +107,27 @@ function getUniqueMoves(state) {
             if (!seenPairs.has(pairKey)) {
                 seenPairs.add(pairKey);
                 moves.push({
+                    type: 'combine',
                     indices: [i, j],
                     elements: [state[i], state[j]],
                     description: `${key1} + ${key2}`
+                });
+            }
+        }
+    }
+
+    // Mosse cestino: scarta un singolo elemento
+    if (trashSlotsRemaining > 0) {
+        const seenTrash = new Set();
+        for (let i = 0; i < state.length; i++) {
+            const key = elementToString(state[i]);
+            if (!seenTrash.has(key)) {
+                seenTrash.add(key);
+                moves.push({
+                    type: 'trash',
+                    index: i,
+                    element: state[i],
+                    description: `Cestina ${key}`
                 });
             }
         }
@@ -120,6 +139,18 @@ function getUniqueMoves(state) {
 // Applica una mossa e restituisce il nuovo stato
 function applyMove(state, move) {
     const newState = [];
+
+    // Mossa cestino: rimuovi solo un elemento
+    if (move.type === 'trash') {
+        for (let k = 0; k < state.length; k++) {
+            if (k !== move.index) {
+                newState.push({ ...state[k] });
+            }
+        }
+        return newState;
+    }
+
+    // Mossa combinazione: rimuovi due elementi e aggiungi risultato
     const [i, j] = move.indices;
 
     // Copia tutti gli elementi tranne quelli coinvolti nella mossa
@@ -157,7 +188,7 @@ function getMoveDescription(elem1, elem2, result) {
 }
 
 // Algoritmo di backtracking per trovare tutte le soluzioni
-function solve(state, path = [], solutions = [], visited = new Set()) {
+function solve(state, path = [], solutions = [], visited = new Set(), trashSlotsRemaining = 0) {
     // Stato canonico per evitare rivisitazioni
     const canonical = stateToCanonical(state);
 
@@ -170,8 +201,8 @@ function solve(state, path = [], solutions = [], visited = new Set()) {
         return;
     }
 
-    // Genera tutte le mosse uniche
-    const moves = getUniqueMoves(state);
+    // Genera tutte le mosse uniche (incluse cestinazioni se disponibili)
+    const moves = getUniqueMoves(state, trashSlotsRemaining);
 
     // Nessuna mossa disponibile = dead end
     if (moves.length === 0) {
@@ -181,10 +212,21 @@ function solve(state, path = [], solutions = [], visited = new Set()) {
     // Prova ogni mossa
     for (const move of moves) {
         const newState = applyMove(state, move);
-        const result = combineElements(move.elements[0], move.elements[1]);
-        const moveDesc = getMoveDescription(move.elements[0], move.elements[1], result);
+        let moveDesc;
+        let newTrashSlots = trashSlotsRemaining;
 
-        solve(newState, [...path, moveDesc], solutions, visited);
+        if (move.type === 'trash') {
+            const elemStr = move.element.type === SquareType.NUMBER
+                ? move.element.value
+                : move.element.value;
+            moveDesc = `Cestina ${elemStr}`;
+            newTrashSlots--;
+        } else {
+            const result = combineElements(move.elements[0], move.elements[1]);
+            moveDesc = getMoveDescription(move.elements[0], move.elements[1], result);
+        }
+
+        solve(newState, [...path, moveDesc], solutions, visited, newTrashSlots);
     }
 }
 
@@ -217,27 +259,37 @@ function findSafeFirstMoves(state) {
 function analyzeLevel(levelIndex) {
     const level = levels[levelIndex];
     const initialState = level.squares.map(sq => ({ ...sq }));
+    const trashSlots = level.trashSlots || 0;
 
     const solutions = [];
-    solve(initialState, [], solutions);
+    solve(initialState, [], solutions, new Set(), trashSlots);
 
     // Calcola statistiche
     const moveLengths = solutions.map(s => s.length);
     const minMoves = solutions.length > 0 ? Math.min(...moveLengths) : 0;
     const maxMoves = solutions.length > 0 ? Math.max(...moveLengths) : 0;
 
-    // Trova prime mosse sicure
-    const firstMoves = getUniqueMoves(initialState);
+    // Trova prime mosse sicure (incluse cestinazioni)
+    const firstMoves = getUniqueMoves(initialState, trashSlots);
     const safeFirstMoves = [];
     const unsafeFirstMoves = [];
 
     for (const move of firstMoves) {
         const newState = applyMove(initialState, move);
         const moveSolutions = [];
-        solve(newState, [], moveSolutions);
+        const newTrashSlots = move.type === 'trash' ? trashSlots - 1 : trashSlots;
+        solve(newState, [], moveSolutions, new Set(), newTrashSlots);
 
-        const result = combineElements(move.elements[0], move.elements[1]);
-        const moveDesc = getMoveDescription(move.elements[0], move.elements[1], result);
+        let moveDesc;
+        if (move.type === 'trash') {
+            const elemStr = move.element.type === SquareType.NUMBER
+                ? move.element.value
+                : move.element.value;
+            moveDesc = `Cestina ${elemStr}`;
+        } else {
+            const result = combineElements(move.elements[0], move.elements[1]);
+            moveDesc = getMoveDescription(move.elements[0], move.elements[1], result);
+        }
 
         if (moveSolutions.length > 0) {
             safeFirstMoves.push(moveDesc);
@@ -262,6 +314,7 @@ function analyzeLevel(levelIndex) {
         levelName: level.name,
         difficulty: getLevelDifficulty(levelIndex),
         totalSquares: level.squares.length,
+        trashSlots: trashSlots,
         totalSolutions: uniqueSolutions.length,
         minMoves,
         maxMoves,

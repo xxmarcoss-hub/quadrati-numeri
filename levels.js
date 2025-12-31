@@ -18,7 +18,8 @@ const DifficultyCategory = {
     MEDIUM: { name: 'Medio', range: [8, 11] },
     HARD: { name: 'Difficile', range: [12, 15] },
     EXPERT: { name: 'Esperto', range: [16, 19] },
-    FINAL: { name: 'Sfida Finale', range: [20, 24] }
+    FINAL: { name: 'Sfida Finale', range: [20, 24] },
+    TRASH: { name: 'Cestino', range: [25, 28] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -363,6 +364,62 @@ const levels = [
             { type: SquareType.NUMBER, value: 15 },
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_2 },
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_3 }
+        ]
+    },
+    // === CESTINO (26-29) === Livelli con elemento cestino
+    {
+        name: "Intruso",
+        trashSlots: 1,
+        // Soluzione: cestina 13, 4+4 spariscono
+        solution: "Cestina 13, 4+4 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.NUMBER, value: 13 }
+        ]
+    },
+    {
+        name: "Due Intrusi",
+        trashSlots: 2,
+        // Soluzione: cestina 7 e 11, 3+3 spariscono, 5+5 spariscono
+        solution: "Cestina 7 e 11, 3+3 spariscono, 5+5 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 5 },
+            { type: SquareType.NUMBER, value: 5 },
+            { type: SquareType.NUMBER, value: 7 },
+            { type: SquareType.NUMBER, value: 11 }
+        ]
+    },
+    {
+        name: "Scelta",
+        trashSlots: 1,
+        // Due numeri primi, un solo slot: devi scegliere quale cestinare
+        // Soluzione: cestina 7, 2+3=5, 5+5 spariscono OPPURE cestina 11, 2+5=7, 3+4=7, 7+7 spariscono
+        solution: "Cestina 7, 2+3=5, 5+5 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 2 },
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 5 },
+            { type: SquareType.NUMBER, value: 7 }
+        ]
+    },
+    {
+        name: "Strategia",
+        trashSlots: 1,
+        // Soluzione: cestina 17, 4×x2=8, 8+8 spariscono, 3+5=8... no, serve 2+6=8
+        // Riprovo: cestina 17, 2+6=8, 3+5=8, 8+8 spariscono, 4×x2=8... serve un altro 8
+        // Nuovo: 4×x2=8, cestina 17, 2+6=8, 8+8 spariscono, 3+5=8... 8 rimasto
+        // Cambio design: cestina 17, 3×x2=6, 2+4=6, 6+6 spariscono
+        solution: "Cestina 17, 3×x2=6, 2+4=6, 6+6 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 2 },
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.NUMBER, value: 6 },
+            { type: SquareType.NUMBER, value: 17 },
+            { type: SquareType.OPERATION, value: OperationType.MULTIPLY_2 }
         ]
     }
 ];

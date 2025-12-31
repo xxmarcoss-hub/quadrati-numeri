@@ -279,6 +279,58 @@ button#btn-reset {
     opacity: 1;
 }
 
+/* Cestino */
+.trash-container {
+    margin-left: auto;
+}
+
+.trash-container.hidden {
+    display: none;
+}
+
+.trash-bin {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 18px;
+    border-radius: 25px;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+.trash-bin.drag-over {
+    border-color: #eb3349;
+    background: rgba(235, 51, 73, 0.2);
+    transform: scale(1.05);
+}
+
+.trash-bin.full {
+    opacity: 0.5;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.trash-icon {
+    font-size: 1.5rem;
+}
+
+.trash-count {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+@keyframes trash-shake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+.trash-bin.shaking .trash-icon {
+    animation: trash-shake 0.3s ease;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     h1 {

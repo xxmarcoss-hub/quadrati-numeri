@@ -141,6 +141,10 @@
     background: linear-gradient(135deg, #e94560 0%, #0f3460 100%);
 }
 
+.difficulty-badge.cestino {
+    background: linear-gradient(135deg, #6b7280 0%, #374151 100%);
+}
+
 /* Mini squares preview */
 .level-card-preview {
     display: flex;
