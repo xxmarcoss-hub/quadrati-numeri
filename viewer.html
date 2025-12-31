@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizzatore Livelli - Quadrati Numeri</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+    <div class="viewer-container">
+        <header>
+            <h1>Visualizzatore Livelli</h1>
+            <nav class="nav-links">
+                <a href="index.html">Gioca</a>
+            </nav>
+        </header>
+
+        <div class="filters">
+            <select id="filter-difficulty">
+                <option value="all">Tutte le difficoltà</option>
+                <option value="Tutorial">Tutorial</option>
+                <option value="Facile">Facile</option>
+                <option value="Medio">Medio</option>
+                <option value="Difficile">Difficile</option>
+                <option value="Esperto">Esperto</option>
+                <option value="Sfida Finale">Sfida Finale</option>
+            </select>
+            <input type="text" id="search-input" placeholder="Cerca livello...">
+        </div>
+
+        <div id="levels-grid" class="levels-grid"></div>
+
+        <div id="level-modal" class="modal hidden">
+            <div class="modal-content">
+                <button class="modal-close">&times;</button>
+                <h2 id="modal-title"></h2>
+                <div class="modal-info">
+                    <span id="modal-difficulty" class="difficulty-badge"></span>
+                    <span id="modal-stats"></span>
+                </div>
+                <div id="modal-squares" class="modal-squares"></div>
+                <div class="modal-solution">
+                    <h3>Soluzione</h3>
+                    <p id="modal-solution-text"></p>
+                </div>
+                <div class="modal-actions">
+                    <a id="modal-play-link" href="#" class="btn-play">Gioca questo livello</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="levels.js"></script>
+    <script src="viewer.js"></script>
+</body>
+</html>
