@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadrati Numeri</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>Quadrati Numeri</h1>
+            <div class="level-info">
+                <span>Livello: <span id="level-number">1</span></span>
+                <span>Quadrati: <span id="squares-count">0</span></span>
+            </div>
+        </header>
+
+        <div id="game-area"></div>
+
+        <div class="controls">
+            <button id="btn-reset">Ricomincia Livello</button>
+            <button id="btn-prev" disabled>&#8592; Precedente</button>
+            <button id="btn-next">Prossimo &#8594;</button>
+        </div>
+
+        <div id="message" class="message hidden"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
