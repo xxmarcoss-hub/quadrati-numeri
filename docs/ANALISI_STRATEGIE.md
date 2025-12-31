@@ -40,18 +40,10 @@ Le ipotesi iniziali sono state **entrambe falsificate**:
 - 20+20 spariscono → [4], [6], [x2]
 - Tutte le combinazioni portano a blocco
 
-**Soluzione corretta:**
-1. 10×x2=20 → [4], [5], [6], [10], [15], [20], [20]
-2. 20+20 spariscono
-3. 5+15=20 → [4], [6], [10], [20]
-4. 4+6=10 → [10], [10], [20]
-5. 10+10 spariscono → [20] - bloccato?
+**Nota:** La soluzione documentata nel codice (`script.js:372`) termina con [20] rimasto.
+Questo potrebbe indicare un **bug nel design del livello**.
 
-**Correzione soluzione Livello 22:**
-1. 10×x2=20 → [4], [5], [6], [10], [15], [20], [20]
-2. 20+20 spariscono → [4], [5], [6], [10], [15]
-3. 5+15=20 → [4], [6], [10], [20]
-4. ... verifica necessaria
+Il controesempio rimane comunque valido: eliminare 10+10 subito porta sicuramente a un blocco.
 
 ## Caso 2: Coppie di operazioni identiche [op]+[op]
 
