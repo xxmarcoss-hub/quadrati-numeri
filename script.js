@@ -35,6 +35,8 @@ class SquareContent {
                 return 'Inverti cifre';
             case OperationType.SUM_DIGITS:
                 return 'Somma cifre';
+            case OperationType.SIGN:
+                return 'Estrai segno';
         }
     }
 
@@ -67,6 +69,9 @@ function applyOperation(num, operationContent) {
             const sum = Math.abs(num).toString().split('').reduce((acc, d) => acc + parseInt(d, 10), 0);
             return sign * sum;
         }
+        case OperationType.SIGN:
+            // Restituisce il segno: 1, -1, o 0
+            return num > 0 ? 1 : (num < 0 ? -1 : 0);
     }
 
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo

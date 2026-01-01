@@ -14,11 +14,12 @@ const OperationType = {
     ABS: '|x|',
     SQUARE: 'x²',
     FLIP: 'flip',
-    SUM_DIGITS: 'Σ'
+    SUM_DIGITS: 'Σ',
+    SIGN: 'sgn'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -32,7 +33,8 @@ const DifficultyCategory = {
     ABS: { name: 'Valore Assoluto', range: [29, 30] },
     SQUARE: { name: 'Quadrato', range: [31, 32] },
     FLIP: { name: 'Inversione Cifre', range: [33, 34] },
-    SUM_DIGITS: { name: 'Somma Cifre', range: [35, 36] }
+    SUM_DIGITS: { name: 'Somma Cifre', range: [35, 36] },
+    SIGN: { name: 'Segno', range: [37, 38] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -522,6 +524,33 @@ const levels = [
             { type: SquareType.NUMBER, value: 9 },
             { type: SquareType.OPERATION, value: OperationType.SUM_DIGITS },
             { type: SquareType.OPERATION, value: OperationType.SUM_DIGITS }
+        ]
+    },
+    // === SEGNO (38-39) ===
+    {
+        name: "Segno",
+        // Soluzione: 42×sgn=1, -7×sgn=-1, 1+[-1]=0, 0+0 spariscono? No, 0 sparisce da solo
+        // Riprovo: 42×sgn=1, 1+1 spariscono, -7×sgn=-1, -1+-1 spariscono
+        solution: "42×sgn=1, 1+1 spariscono, -7×sgn=-1, -1+-1 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 42 },
+            { type: SquareType.NUMBER, value: 1 },
+            { type: SquareType.NUMBER, value: -7 },
+            { type: SquareType.NUMBER, value: -1 },
+            { type: SquareType.OPERATION, value: OperationType.SIGN },
+            { type: SquareType.OPERATION, value: OperationType.SIGN }
+        ]
+    },
+    {
+        name: "Normalizza",
+        // Soluzione: 100×sgn=1, -50×sgn=-1, 1+[-1]=0, 0+0 spariscono
+        solution: "100×sgn=1, -50×sgn=-1, 1+[-1]=0, 0+0 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 100 },
+            { type: SquareType.NUMBER, value: -50 },
+            { type: SquareType.NUMBER, value: 0 },
+            { type: SquareType.OPERATION, value: OperationType.SIGN },
+            { type: SquareType.OPERATION, value: OperationType.SIGN }
         ]
     }
 ];
