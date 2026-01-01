@@ -13,11 +13,12 @@ const OperationType = {
     // Operazioni speciali (non componibili)
     ABS: '|x|',
     SQUARE: 'x²',
-    FLIP: 'flip'
+    FLIP: 'flip',
+    SUM_DIGITS: 'Σ'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -30,7 +31,8 @@ const DifficultyCategory = {
     TRASH: { name: 'Cestino', range: [25, 28] },
     ABS: { name: 'Valore Assoluto', range: [29, 30] },
     SQUARE: { name: 'Quadrato', range: [31, 32] },
-    FLIP: { name: 'Inversione Cifre', range: [33, 34] }
+    FLIP: { name: 'Inversione Cifre', range: [33, 34] },
+    SUM_DIGITS: { name: 'Somma Cifre', range: [35, 36] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -498,6 +500,28 @@ const levels = [
             { type: SquareType.NUMBER, value: 11 },
             { type: SquareType.OPERATION, value: OperationType.FLIP },
             { type: SquareType.OPERATION, value: OperationType.FLIP }
+        ]
+    },
+    // === SOMMA CIFRE (36-37) ===
+    {
+        name: "Riduzione",
+        // Soluzione: 234×Σ=9, 9+9 spariscono
+        solution: "234×Σ=9, 9+9 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 234 },
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.OPERATION, value: OperationType.SUM_DIGITS }
+        ]
+    },
+    {
+        name: "Doppia Somma",
+        // Soluzione: 99×Σ=18, 18×Σ=9, 9+9 spariscono
+        solution: "99×Σ=18, 18×Σ=9, 9+9 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 99 },
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.OPERATION, value: OperationType.SUM_DIGITS },
+            { type: SquareType.OPERATION, value: OperationType.SUM_DIGITS }
         ]
     }
 ];
