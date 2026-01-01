@@ -45,6 +45,8 @@ class SquareContent {
                 return 'Fattoriale (solo 1-6)';
             case OperationType.POW_2:
                 return 'Potenza di 2 (solo 1-10)';
+            case OperationType.POW_3:
+                return 'Potenza di 3 (solo 1-6)';
         }
     }
 
@@ -88,6 +90,9 @@ function applyOperation(num, operationContent) {
         case OperationType.POW_2:
             // Potenza di 2: 2^n
             return Math.pow(2, num);
+        case OperationType.POW_3:
+            // Potenza di 3: 3^n
+            return Math.pow(3, num);
     }
 
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
@@ -170,6 +175,11 @@ function canApplyOperation(num, operationContent) {
     // Potenza di 2: solo numeri da 1 a 10
     if (opValue === OperationType.POW_2) {
         return Number.isInteger(num) && num >= 1 && num <= 10;
+    }
+
+    // Potenza di 3: solo numeri da 1 a 6
+    if (opValue === OperationType.POW_3) {
+        return Number.isInteger(num) && num >= 1 && num <= 6;
     }
 
     // Tutte le altre operazioni sono sempre applicabili

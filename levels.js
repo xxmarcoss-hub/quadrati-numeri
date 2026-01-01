@@ -19,11 +19,12 @@ const OperationType = {
     SUM_DIGITS: 'Σ',
     SIGN: 'sgn',
     FACTORIAL: 'n!',
-    POW_2: '2^n'
+    POW_2: '2^n',
+    POW_3: '3^n'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -41,7 +42,8 @@ const DifficultyCategory = {
     SIGN: { name: 'Segno', range: [37, 38] },
     DIVIDE: { name: 'Divisioni', range: [39, 41] },
     FACTORIAL: { name: 'Fattoriale', range: [42, 43] },
-    POW_2: { name: 'Potenza di 2', range: [44, 45] }
+    POW_2: { name: 'Potenza di 2', range: [44, 45] },
+    POW_3: { name: 'Potenza di 3', range: [46, 47] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -632,6 +634,27 @@ const levels = [
             { type: SquareType.NUMBER, value: 10 },
             { type: SquareType.NUMBER, value: 1024 },
             { type: SquareType.OPERATION, value: OperationType.POW_2 }
+        ]
+    },
+    // === POTENZA DI 3 (47-48) ===
+    {
+        name: "Potenza Tre",
+        // Soluzione: 2×3^n=9, 9+9 spariscono
+        solution: "2×3^n=9, 9+9 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 2 },
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.OPERATION, value: OperationType.POW_3 }
+        ]
+    },
+    {
+        name: "Potenza Ventisette",
+        // Soluzione: 3×3^n=27, 27+27 spariscono
+        solution: "3×3^n=27, 27+27 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 27 },
+            { type: SquareType.OPERATION, value: OperationType.POW_3 }
         ]
     }
 ];
