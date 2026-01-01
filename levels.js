@@ -10,6 +10,8 @@ const OperationType = {
     MULTIPLY_2: 'x2',
     MULTIPLY_3: 'x3',
     NEGATE: '+-',
+    DIVIDE_2: '/2',
+    DIVIDE_3: '/3',
     // Operazioni speciali (non componibili)
     ABS: '|x|',
     SQUARE: 'x²',
@@ -34,7 +36,8 @@ const DifficultyCategory = {
     SQUARE: { name: 'Quadrato', range: [31, 32] },
     FLIP: { name: 'Inversione Cifre', range: [33, 34] },
     SUM_DIGITS: { name: 'Somma Cifre', range: [35, 36] },
-    SIGN: { name: 'Segno', range: [37, 38] }
+    SIGN: { name: 'Segno', range: [37, 38] },
+    DIVIDE: { name: 'Divisioni', range: [39, 41] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -551,6 +554,38 @@ const levels = [
             { type: SquareType.NUMBER, value: 0 },
             { type: SquareType.OPERATION, value: OperationType.SIGN },
             { type: SquareType.OPERATION, value: OperationType.SIGN }
+        ]
+    },
+    // === DIVISIONI (40-42) ===
+    {
+        name: "Divisione Base",
+        // Soluzione: 8×/2=4, 4+4 spariscono
+        solution: "8×/2=4, 4+4 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 8 },
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.OPERATION, value: OperationType.DIVIDE_2 }
+        ]
+    },
+    {
+        name: "Annullamento",
+        // Soluzione: /2+x2=identità (spariscono), 6+6 spariscono
+        solution: "/2+x2=identità (spariscono), 6+6 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 6 },
+            { type: SquareType.NUMBER, value: 6 },
+            { type: SquareType.OPERATION, value: OperationType.DIVIDE_2 },
+            { type: SquareType.OPERATION, value: OperationType.MULTIPLY_2 }
+        ]
+    },
+    {
+        name: "Divisione Tripla",
+        // Soluzione: 9×/3=3, 3+3 spariscono
+        solution: "9×/3=3, 3+3 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 }
         ]
     }
 ];
