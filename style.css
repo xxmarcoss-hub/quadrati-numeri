@@ -206,6 +206,17 @@ h1 {
     animation: merge 0.5s ease-out;
 }
 
+/* Effetto glow per quadrati creati da operazioni */
+.square.glow {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.4);
+    transition: box-shadow 0.3s ease;
+}
+
+.square.glow-fade {
+    box-shadow: none;
+    transition: box-shadow 0.5s ease;
+}
+
 @keyframes reject {
     0%, 100% { transform: translateX(0); }
     20% { transform: translateX(-5px); }

@@ -565,7 +565,8 @@ function combineSquares(dragged, target) {
             if (targetContent.composedMultiplier) {
                 newContent.composedMultiplier = targetContent.composedMultiplier;
             }
-            createSquare(newContent, 0);
+            const newSquare = createSquare(newContent, 0);
+            applyGlow(newSquare);
             updateUI();
             checkWin();
         }, 300);
@@ -601,7 +602,9 @@ function combineSquares(dragged, target) {
         setTimeout(() => {
             divisors.forEach((div, index) => {
                 const newContent = new SquareContent(SquareType.NUMBER, div);
-                createSquare(newContent, index * 100);
+                const newSquare = createSquare(newContent, index * 100);
+                // Applica glow con delay per sincronizzare con l'animazione
+                setTimeout(() => applyGlow(newSquare), index * 100);
             });
             updateUI();
             checkWin();
@@ -692,6 +695,7 @@ function combineSquares(dragged, target) {
     setTimeout(() => {
         const newSquare = createSquareFromResult(result, targetNextSibling);
         newSquare.classList.add('merging');
+        applyGlow(newSquare);
         updateUI();
         checkWin();
     }, 300);
@@ -761,6 +765,18 @@ function removeSquare(square) {
         gameState.squares = gameState.squares.filter(s => s.id != id);
         updateUI();
     }, 300);
+}
+
+// Applica effetto glow temporaneo a un quadrato
+function applyGlow(square) {
+    square.classList.add('glow');
+    setTimeout(() => {
+        square.classList.remove('glow');
+        square.classList.add('glow-fade');
+        setTimeout(() => {
+            square.classList.remove('glow-fade');
+        }, 500);
+    }, 2000);
 }
 
 // Cestina un quadrato
