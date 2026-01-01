@@ -24,11 +24,12 @@ const OperationType = {
     MOD_2: '%2',
     MOD_3: '%3',
     MOD_5: '%5',
-    MOD_10: '%10'
+    MOD_10: '%10',
+    SQRT: '√'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3, OperationType.MOD_2, OperationType.MOD_3, OperationType.MOD_5, OperationType.MOD_10];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3, OperationType.MOD_2, OperationType.MOD_3, OperationType.MOD_5, OperationType.MOD_10, OperationType.SQRT];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -48,7 +49,8 @@ const DifficultyCategory = {
     FACTORIAL: { name: 'Fattoriale', range: [42, 43] },
     POW_2: { name: 'Potenza di 2', range: [44, 45] },
     POW_3: { name: 'Potenza di 3', range: [46, 47] },
-    MODULO: { name: 'Modulo', range: [48, 51] }
+    MODULO: { name: 'Modulo', range: [48, 51] },
+    SQRT: { name: 'Radice Quadrata', range: [52, 54] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -701,6 +703,38 @@ const levels = [
             { type: SquareType.NUMBER, value: 234 },
             { type: SquareType.NUMBER, value: 4 },
             { type: SquareType.OPERATION, value: OperationType.MOD_10 }
+        ]
+    },
+    // === RADICE QUADRATA (53-55) ===
+    {
+        name: "Radice",
+        // Soluzione: 16×√=4, 4+4 spariscono
+        solution: "16×√=4, 4+4 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 16 },
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.OPERATION, value: OperationType.SQRT }
+        ]
+    },
+    {
+        name: "Radice Cento",
+        // Soluzione: 100×√=10, 10+10 spariscono
+        solution: "100×√=10, 10+10 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 100 },
+            { type: SquareType.NUMBER, value: 10 },
+            { type: SquareType.OPERATION, value: OperationType.SQRT }
+        ]
+    },
+    {
+        name: "Inversi",
+        // Soluzione: √+x²=identità (spariscono), 5+5 spariscono
+        solution: "√+x²=identità (spariscono), 5+5 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 5 },
+            { type: SquareType.NUMBER, value: 5 },
+            { type: SquareType.OPERATION, value: OperationType.SQRT },
+            { type: SquareType.OPERATION, value: OperationType.SQUARE }
         ]
     }
 ];
