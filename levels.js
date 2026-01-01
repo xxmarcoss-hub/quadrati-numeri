@@ -775,13 +775,12 @@ const levels = [
     },
     {
         name: "Esplosione Sei",
-        // Soluzione: 6×÷→=[2,3,6], 2+2 spariscono, 3+3 spariscono, 6+6 spariscono
-        solution: "6×÷→=[2,3,6], 2+2 spariscono, 3+3 spariscono, 6+6 spariscono",
+        // Soluzione: 6×÷→=[2,3], 2+2 spariscono, 3+3 spariscono
+        solution: "6×÷→=[2,3], 2+2 spariscono, 3+3 spariscono",
         squares: [
             { type: SquareType.NUMBER, value: 6 },
             { type: SquareType.NUMBER, value: 2 },
             { type: SquareType.NUMBER, value: 3 },
-            { type: SquareType.NUMBER, value: 6 },
             { type: SquareType.OPERATION, value: OperationType.DIVISORS }
         ]
     }
