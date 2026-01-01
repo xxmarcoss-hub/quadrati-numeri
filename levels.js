@@ -19,8 +19,8 @@ const OperationType = {
     SUM_DIGITS: 'Σ',
     SIGN: 'sgn',
     FACTORIAL: 'n!',
-    POW_2: '2^n',
-    POW_3: '3^n',
+    POW_2: '2ⁿ',
+    POW_3: '3ⁿ',
     MOD_2: '%2',
     MOD_3: '%3',
     MOD_5: '%5',
@@ -629,8 +629,8 @@ const levels = [
     // === POTENZA DI 2 (45-46) ===
     {
         name: "Potenza Due",
-        // Soluzione: 3×2^n=8, 8+8 spariscono
-        solution: "3×2^n=8, 8+8 spariscono",
+        // Soluzione: 3×2ⁿ=8, 8+8 spariscono
+        solution: "3×2ⁿ=8, 8+8 spariscono",
         squares: [
             { type: SquareType.NUMBER, value: 3 },
             { type: SquareType.NUMBER, value: 8 },
@@ -639,8 +639,8 @@ const levels = [
     },
     {
         name: "Potenza Dieci",
-        // Soluzione: 10×2^n=1024, 1024+1024 spariscono
-        solution: "10×2^n=1024, 1024+1024 spariscono",
+        // Soluzione: 10×2ⁿ=1024, 1024+1024 spariscono
+        solution: "10×2ⁿ=1024, 1024+1024 spariscono",
         squares: [
             { type: SquareType.NUMBER, value: 10 },
             { type: SquareType.NUMBER, value: 1024 },
@@ -650,8 +650,8 @@ const levels = [
     // === POTENZA DI 3 (47-48) ===
     {
         name: "Potenza Tre",
-        // Soluzione: 2×3^n=9, 9+9 spariscono
-        solution: "2×3^n=9, 9+9 spariscono",
+        // Soluzione: 2×3ⁿ=9, 9+9 spariscono
+        solution: "2×3ⁿ=9, 9+9 spariscono",
         squares: [
             { type: SquareType.NUMBER, value: 2 },
             { type: SquareType.NUMBER, value: 9 },
@@ -660,8 +660,8 @@ const levels = [
     },
     {
         name: "Potenza Ventisette",
-        // Soluzione: 3×3^n=27, 27+27 spariscono
-        solution: "3×3^n=27, 27+27 spariscono",
+        // Soluzione: 3×3ⁿ=27, 27+27 spariscono
+        solution: "3×3ⁿ=27, 27+27 spariscono",
         squares: [
             { type: SquareType.NUMBER, value: 3 },
             { type: SquareType.NUMBER, value: 27 },

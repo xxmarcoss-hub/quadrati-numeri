@@ -102,10 +102,10 @@ function applyOperation(num, operationContent) {
             return factorials[num];
         }
         case OperationType.POW_2:
-            // Potenza di 2: 2^n
+            // Potenza di 2: 2ⁿ
             return Math.pow(2, num);
         case OperationType.POW_3:
-            // Potenza di 3: 3^n
+            // Potenza di 3: 3ⁿ
             return Math.pow(3, num);
         case OperationType.MOD_2:
             // Modulo 2 (sempre positivo)
