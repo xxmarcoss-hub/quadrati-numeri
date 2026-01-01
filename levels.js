@@ -11,11 +11,12 @@ const OperationType = {
     MULTIPLY_3: 'x3',
     NEGATE: '+-',
     // Operazioni speciali (non componibili)
-    ABS: '|x|'
+    ABS: '|x|',
+    SQUARE: 'x²'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -26,7 +27,8 @@ const DifficultyCategory = {
     EXPERT: { name: 'Esperto', range: [16, 19] },
     FINAL: { name: 'Sfida Finale', range: [20, 24] },
     TRASH: { name: 'Cestino', range: [25, 28] },
-    ABS: { name: 'Valore Assoluto', range: [29, 30] }
+    ABS: { name: 'Valore Assoluto', range: [29, 30] },
+    SQUARE: { name: 'Quadrato', range: [31, 32] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -451,6 +453,27 @@ const levels = [
             { type: SquareType.NUMBER, value: -7 },
             { type: SquareType.OPERATION, value: OperationType.ABS },
             { type: SquareType.OPERATION, value: OperationType.ABS }
+        ]
+    },
+    // === QUADRATO (32-33) ===
+    {
+        name: "Quadrato",
+        // Soluzione: 2×x²=4, 4+4 spariscono
+        solution: "2×x²=4, 4+4 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 2 },
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.OPERATION, value: OperationType.SQUARE }
+        ]
+    },
+    {
+        name: "Quadrato Negativo",
+        // Soluzione: -3×x²=9, 9+9 spariscono (quadrato di negativo = positivo)
+        solution: "-3×x²=9, 9+9 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: -3 },
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.OPERATION, value: OperationType.SQUARE }
         ]
     }
 ];

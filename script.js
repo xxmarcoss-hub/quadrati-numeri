@@ -29,6 +29,8 @@ class SquareContent {
                 return 'Inverti segno';
             case OperationType.ABS:
                 return 'Valore assoluto';
+            case OperationType.SQUARE:
+                return 'Eleva al quadrato';
         }
     }
 
@@ -47,6 +49,8 @@ function applyOperation(num, operationContent) {
     switch (opValue) {
         case OperationType.ABS:
             return Math.abs(num);
+        case OperationType.SQUARE:
+            return num * num;
     }
 
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
