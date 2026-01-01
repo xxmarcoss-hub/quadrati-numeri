@@ -20,11 +20,15 @@ const OperationType = {
     SIGN: 'sgn',
     FACTORIAL: 'n!',
     POW_2: '2^n',
-    POW_3: '3^n'
+    POW_3: '3^n',
+    MOD_2: '%2',
+    MOD_3: '%3',
+    MOD_5: '%5',
+    MOD_10: '%10'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3, OperationType.MOD_2, OperationType.MOD_3, OperationType.MOD_5, OperationType.MOD_10];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -43,7 +47,8 @@ const DifficultyCategory = {
     DIVIDE: { name: 'Divisioni', range: [39, 41] },
     FACTORIAL: { name: 'Fattoriale', range: [42, 43] },
     POW_2: { name: 'Potenza di 2', range: [44, 45] },
-    POW_3: { name: 'Potenza di 3', range: [46, 47] }
+    POW_3: { name: 'Potenza di 3', range: [46, 47] },
+    MODULO: { name: 'Modulo', range: [48, 51] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -655,6 +660,47 @@ const levels = [
             { type: SquareType.NUMBER, value: 3 },
             { type: SquareType.NUMBER, value: 27 },
             { type: SquareType.OPERATION, value: OperationType.POW_3 }
+        ]
+    },
+    // === MODULO (49-52) ===
+    {
+        name: "Modulo Due",
+        // Soluzione: 7×%2=1, 1+1 spariscono
+        solution: "7×%2=1, 1+1 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 7 },
+            { type: SquareType.NUMBER, value: 1 },
+            { type: SquareType.OPERATION, value: OperationType.MOD_2 }
+        ]
+    },
+    {
+        name: "Modulo Tre",
+        // Soluzione: 17×%3=2, 2+2 spariscono
+        solution: "17×%3=2, 2+2 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 17 },
+            { type: SquareType.NUMBER, value: 2 },
+            { type: SquareType.OPERATION, value: OperationType.MOD_3 }
+        ]
+    },
+    {
+        name: "Modulo Cinque",
+        // Soluzione: 23×%5=3, 3+3 spariscono
+        solution: "23×%5=3, 3+3 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 23 },
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.OPERATION, value: OperationType.MOD_5 }
+        ]
+    },
+    {
+        name: "Ultima Cifra",
+        // Soluzione: 234×%10=4, 4+4 spariscono (mod10 = ultima cifra)
+        solution: "234×%10=4, 4+4 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 234 },
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.OPERATION, value: OperationType.MOD_10 }
         ]
     }
 ];
