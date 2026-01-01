@@ -25,11 +25,12 @@ const OperationType = {
     MOD_3: '%3',
     MOD_5: '%5',
     MOD_10: '%10',
-    SQRT: '√'
+    SQRT: '√',
+    CLONE: '⊕'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3, OperationType.MOD_2, OperationType.MOD_3, OperationType.MOD_5, OperationType.MOD_10, OperationType.SQRT];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3, OperationType.MOD_2, OperationType.MOD_3, OperationType.MOD_5, OperationType.MOD_10, OperationType.SQRT, OperationType.CLONE];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -50,7 +51,8 @@ const DifficultyCategory = {
     POW_2: { name: 'Potenza di 2', range: [44, 45] },
     POW_3: { name: 'Potenza di 3', range: [46, 47] },
     MODULO: { name: 'Modulo', range: [48, 51] },
-    SQRT: { name: 'Radice Quadrata', range: [52, 54] }
+    SQRT: { name: 'Radice Quadrata', range: [52, 54] },
+    CLONE: { name: 'Clone', range: [55, 56] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -735,6 +737,27 @@ const levels = [
             { type: SquareType.NUMBER, value: 5 },
             { type: SquareType.OPERATION, value: OperationType.SQRT },
             { type: SquareType.OPERATION, value: OperationType.SQUARE }
+        ]
+    },
+    // === CLONE (56-57) ===
+    {
+        name: "Clona",
+        // Soluzione: 7×⊕=7,7 (clona 7), 7+7 spariscono
+        solution: "7×⊕=7,7 (clona 7), 7+7 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 7 },
+            { type: SquareType.OPERATION, value: OperationType.CLONE }
+        ]
+    },
+    {
+        name: "Strategia Clone",
+        // Soluzione: 3×⊕=3,3, 3+3 spariscono, 5+5 spariscono
+        solution: "3×⊕=3,3, 3+3 spariscono, 5+5 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 5 },
+            { type: SquareType.NUMBER, value: 5 },
+            { type: SquareType.OPERATION, value: OperationType.CLONE }
         ]
     }
 ];
