@@ -126,6 +126,18 @@ h1 {
     box-shadow: 0 8px 25px rgba(247, 151, 30, 0.4);
 }
 
+/* Colori per le operazioni speciali - Viola */
+.square.operation.special {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Colori per le divisioni - Verde */
+.square.operation.divide {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+}
+
 /* Animazioni */
 @keyframes appear {
     0% {
@@ -192,6 +204,19 @@ h1 {
 
 .square.merging {
     animation: merge 0.5s ease-out;
+}
+
+@keyframes reject {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+}
+
+.square.rejected {
+    animation: reject 0.3s ease;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
 }
 
 /* Controlli */

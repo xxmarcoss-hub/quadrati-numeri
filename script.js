@@ -27,12 +27,74 @@ class SquareContent {
                 return 'Moltiplica per 3';
             case OperationType.NEGATE:
                 return 'Inverti segno';
+            case OperationType.DIVIDE_2:
+                return 'Dividi per 2 (solo pari)';
+            case OperationType.DIVIDE_3:
+                return 'Dividi per 3 (solo multipli)';
+            case OperationType.ABS:
+                return 'Valore assoluto';
+            case OperationType.SQUARE:
+                return 'Eleva al quadrato';
+            case OperationType.FLIP:
+                return 'Inverti cifre';
+            case OperationType.SUM_DIGITS:
+                return 'Somma cifre';
+            case OperationType.SIGN:
+                return 'Estrai segno';
+            case OperationType.FACTORIAL:
+                return 'Fattoriale (solo 1-6)';
+            case OperationType.POW_2:
+                return 'Potenza di 2 (solo 1-10)';
+            case OperationType.POW_3:
+                return 'Potenza di 3 (solo 1-6)';
         }
+    }
+
+    // Verifica se l'operazione è speciale (non componibile)
+    isSpecialOperation() {
+        return this.type === SquareType.OPERATION &&
+               SpecialOperations.includes(this.value);
     }
 }
 
 // Funzione per applicare un'operazione a un numero
 function applyOperation(num, operationContent) {
+    // Gestisci operazioni speciali
+    const opValue = typeof operationContent === 'object' ? operationContent.value : operationContent;
+
+    switch (opValue) {
+        case OperationType.ABS:
+            return Math.abs(num);
+        case OperationType.SQUARE:
+            return num * num;
+        case OperationType.FLIP: {
+            // Inverti le cifre del numero, mantieni il segno
+            const sign = num < 0 ? -1 : 1;
+            const flipped = parseInt(Math.abs(num).toString().split('').reverse().join(''), 10);
+            return sign * flipped;
+        }
+        case OperationType.SUM_DIGITS: {
+            // Somma le cifre del numero, mantieni il segno
+            const sign = num < 0 ? -1 : 1;
+            const sum = Math.abs(num).toString().split('').reduce((acc, d) => acc + parseInt(d, 10), 0);
+            return sign * sum;
+        }
+        case OperationType.SIGN:
+            // Restituisce il segno: 1, -1, o 0
+            return num > 0 ? 1 : (num < 0 ? -1 : 0);
+        case OperationType.FACTORIAL: {
+            // Fattoriale: 1!=1, 2!=2, 3!=6, 4!=24, 5!=120, 6!=720
+            const factorials = [1, 1, 2, 6, 24, 120, 720];
+            return factorials[num];
+        }
+        case OperationType.POW_2:
+            // Potenza di 2: 2^n
+            return Math.pow(2, num);
+        case OperationType.POW_3:
+            // Potenza di 3: 3^n
+            return Math.pow(3, num);
+    }
+
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
     if (typeof operationContent === 'object') {
         return num * getMultiplier(operationContent);
@@ -58,7 +120,9 @@ function getMultiplier(content) {
     const baseMultipliers = {
         [OperationType.MULTIPLY_2]: 2,
         [OperationType.MULTIPLY_3]: 3,
-        [OperationType.NEGATE]: -1
+        [OperationType.NEGATE]: -1,
+        [OperationType.DIVIDE_2]: 0.5,
+        [OperationType.DIVIDE_3]: 1/3
     };
 
     // Se ha un moltiplicatore composto, usalo
@@ -71,12 +135,55 @@ function getMultiplier(content) {
         return baseMultipliers[content.value];
     }
 
-    // Fallback: parsa dalla stringa (es. "x6" -> 6)
-    if (typeof content.value === 'string' && content.value.startsWith('x')) {
-        return parseInt(content.value.substring(1));
+    // Fallback: parsa dalla stringa (es. "x6" -> 6, "/6" -> 1/6)
+    if (typeof content.value === 'string') {
+        if (content.value.startsWith('x')) {
+            return parseInt(content.value.substring(1));
+        }
+        if (content.value.startsWith('/')) {
+            return 1 / parseInt(content.value.substring(1));
+        }
     }
 
     return 1;
+}
+
+// Verifica se un'operazione può essere applicata a un numero
+function canApplyOperation(num, operationContent) {
+    const opValue = typeof operationContent === 'object' ? operationContent.value : operationContent;
+    const multiplier = typeof operationContent === 'object' ? getMultiplier(operationContent) : null;
+
+    // Divisioni: verificano che il numero sia divisibile
+    if (opValue === OperationType.DIVIDE_2 || (multiplier && multiplier === 0.5)) {
+        return num % 2 === 0;
+    }
+    if (opValue === OperationType.DIVIDE_3 || (multiplier && Math.abs(multiplier - 1/3) < 0.0001)) {
+        return num % 3 === 0;
+    }
+
+    // Operazioni composte con divisore: verifica divisibilità
+    if (multiplier && multiplier < 1 && multiplier > 0) {
+        const divisor = Math.round(1 / multiplier);
+        return num % divisor === 0;
+    }
+
+    // Fattoriale: solo numeri da 1 a 6
+    if (opValue === OperationType.FACTORIAL) {
+        return Number.isInteger(num) && num >= 1 && num <= 6;
+    }
+
+    // Potenza di 2: solo numeri da 1 a 10
+    if (opValue === OperationType.POW_2) {
+        return Number.isInteger(num) && num >= 1 && num <= 10;
+    }
+
+    // Potenza di 3: solo numeri da 1 a 6
+    if (opValue === OperationType.POW_3) {
+        return Number.isInteger(num) && num >= 1 && num <= 6;
+    }
+
+    // Tutte le altre operazioni sono sempre applicabili
+    return true;
 }
 
 // Funzione per comporre due operazioni
@@ -91,10 +198,21 @@ function composeOperations(content1, content2) {
     }
 
     // Crea una nuova operazione "virtuale"
+    let display;
+    if (result > 0 && result < 1) {
+        // Divisione: mostra come /N
+        display = `/${Math.round(1/result)}`;
+    } else if (result < 0 && result > -1) {
+        // Divisione negativa: mostra come -/N
+        display = `-/${Math.round(-1/result)}`;
+    } else {
+        display = `x${result}`;
+    }
+
     return {
         type: 'composed',
         multiplier: result,
-        display: `x${result}`
+        display: display
     };
 }
 
@@ -191,8 +309,13 @@ function createSquare(content, delay = 0) {
         else square.classList.add('zero');
     } else {
         square.classList.add('operation');
-        if (content.value === OperationType.NEGATE) {
+        if (content.isSpecialOperation()) {
+            square.classList.add('special');
+        } else if (content.value === OperationType.NEGATE) {
             square.classList.add('negate');
+        } else if (content.value === OperationType.DIVIDE_2 || content.value === OperationType.DIVIDE_3 ||
+                   (typeof content.value === 'string' && content.value.startsWith('/'))) {
+            square.classList.add('divide');
         } else {
             square.classList.add('multiply');
         }
@@ -377,13 +500,48 @@ function combineSquares(dragged, target) {
         // Numero + Numero = Somma
         result = new SquareContent(SquareType.NUMBER, content1.value + content2.value);
     } else if (content1.type === SquareType.NUMBER && content2.type === SquareType.OPERATION) {
-        // Numero + Operazione = Applica operazione
+        // Numero + Operazione = Applica operazione (se applicabile)
+        if (!canApplyOperation(content1.value, content2)) {
+            // Rifiuta - operazione non applicabile (es. divisione su numero non divisibile)
+            dragged.classList.add('rejected');
+            target.classList.add('rejected');
+            setTimeout(() => {
+                dragged.classList.remove('rejected');
+                target.classList.remove('rejected');
+            }, 300);
+            return;
+        }
         result = new SquareContent(SquareType.NUMBER, applyOperation(content1.value, content2));
     } else if (content1.type === SquareType.OPERATION && content2.type === SquareType.NUMBER) {
-        // Operazione + Numero = Applica operazione
+        // Operazione + Numero = Applica operazione (se applicabile)
+        if (!canApplyOperation(content2.value, content1)) {
+            // Rifiuta - operazione non applicabile
+            dragged.classList.add('rejected');
+            target.classList.add('rejected');
+            setTimeout(() => {
+                dragged.classList.remove('rejected');
+                target.classList.remove('rejected');
+            }, 300);
+            return;
+        }
         result = new SquareContent(SquareType.NUMBER, applyOperation(content2.value, content1));
     } else {
-        // Operazione + Operazione = Compone
+        // Operazione + Operazione = Compone (solo se entrambe non-speciali)
+        const isSpecial1 = content1.isSpecialOperation();
+        const isSpecial2 = content2.isSpecialOperation();
+
+        // Le operazioni speciali non si compongono tra loro né con altre operazioni
+        if (isSpecial1 || isSpecial2) {
+            // Rifiuta la combinazione - feedback visivo
+            dragged.classList.add('rejected');
+            target.classList.add('rejected');
+            setTimeout(() => {
+                dragged.classList.remove('rejected');
+                target.classList.remove('rejected');
+            }, 300);
+            return;
+        }
+
         const composed = composeOperations(content1, content2);
         if (composed.type === 'identity') {
             // Le operazioni si annullano
@@ -428,14 +586,20 @@ function createSquareFromResult(content, insertBeforeElement = null) {
         square.dataset.tooltip = `Numero: ${content.value}`;
     } else {
         square.classList.add('operation');
-        if (content.composedMultiplier && content.composedMultiplier < 0) {
+        if (content.isSpecialOperation()) {
+            square.classList.add('special');
+        } else if (content.composedMultiplier && content.composedMultiplier < 0) {
             square.classList.add('negate');
+        } else if (content.value === OperationType.DIVIDE_2 || content.value === OperationType.DIVIDE_3 ||
+                   (typeof content.value === 'string' && content.value.startsWith('/')) ||
+                   (content.composedMultiplier && content.composedMultiplier > 0 && content.composedMultiplier < 1)) {
+            square.classList.add('divide');
         } else {
             square.classList.add('multiply');
         }
         square.textContent = content.value;
         square.dataset.tooltip = content.composedMultiplier
-            ? `Moltiplica per ${content.composedMultiplier}`
+            ? (content.composedMultiplier < 1 ? `Dividi per ${Math.round(1/content.composedMultiplier)}` : `Moltiplica per ${content.composedMultiplier}`)
             : content.getTooltip();
     }
 

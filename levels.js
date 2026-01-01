@@ -6,10 +6,25 @@ const SquareType = {
 
 // Tipi di operazioni
 const OperationType = {
+    // Operazioni moltiplicative (si compongono tra loro)
     MULTIPLY_2: 'x2',
     MULTIPLY_3: 'x3',
-    NEGATE: '+-'
+    NEGATE: '+-',
+    DIVIDE_2: '/2',
+    DIVIDE_3: '/3',
+    // Operazioni speciali (non componibili)
+    ABS: '|x|',
+    SQUARE: 'x²',
+    FLIP: 'flip',
+    SUM_DIGITS: 'Σ',
+    SIGN: 'sgn',
+    FACTORIAL: 'n!',
+    POW_2: '2^n',
+    POW_3: '3^n'
 };
+
+// Operazioni speciali: non si compongono con altre operazioni
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -19,7 +34,16 @@ const DifficultyCategory = {
     HARD: { name: 'Difficile', range: [12, 15] },
     EXPERT: { name: 'Esperto', range: [16, 19] },
     FINAL: { name: 'Sfida Finale', range: [20, 24] },
-    TRASH: { name: 'Cestino', range: [25, 28] }
+    TRASH: { name: 'Cestino', range: [25, 28] },
+    ABS: { name: 'Valore Assoluto', range: [29, 30] },
+    SQUARE: { name: 'Quadrato', range: [31, 32] },
+    FLIP: { name: 'Inversione Cifre', range: [33, 34] },
+    SUM_DIGITS: { name: 'Somma Cifre', range: [35, 36] },
+    SIGN: { name: 'Segno', range: [37, 38] },
+    DIVIDE: { name: 'Divisioni', range: [39, 41] },
+    FACTORIAL: { name: 'Fattoriale', range: [42, 43] },
+    POW_2: { name: 'Potenza di 2', range: [44, 45] },
+    POW_3: { name: 'Potenza di 3', range: [46, 47] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -420,6 +444,217 @@ const levels = [
             { type: SquareType.NUMBER, value: 6 },
             { type: SquareType.NUMBER, value: 17 },
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_2 }
+        ]
+    },
+    // === VALORE ASSOLUTO (30-31) ===
+    {
+        name: "Assoluto",
+        // Soluzione: -5×|x|=5, 5+5 spariscono
+        solution: "-5×|x|=5, 5+5 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 5 },
+            { type: SquareType.NUMBER, value: -5 },
+            { type: SquareType.OPERATION, value: OperationType.ABS }
+        ]
+    },
+    {
+        name: "Specchio Assoluto",
+        // Soluzione: -3×|x|=3, 3+3 spariscono, -7×|x|=7, 7+7 spariscono
+        solution: "-3×|x|=3, 3+3 spariscono, -7×|x|=7, 7+7 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: -3 },
+            { type: SquareType.NUMBER, value: 7 },
+            { type: SquareType.NUMBER, value: -7 },
+            { type: SquareType.OPERATION, value: OperationType.ABS },
+            { type: SquareType.OPERATION, value: OperationType.ABS }
+        ]
+    },
+    // === QUADRATO (32-33) ===
+    {
+        name: "Quadrato",
+        // Soluzione: 2×x²=4, 4+4 spariscono
+        solution: "2×x²=4, 4+4 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 2 },
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.OPERATION, value: OperationType.SQUARE }
+        ]
+    },
+    {
+        name: "Quadrato Negativo",
+        // Soluzione: -3×x²=9, 9+9 spariscono (quadrato di negativo = positivo)
+        solution: "-3×x²=9, 9+9 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: -3 },
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.OPERATION, value: OperationType.SQUARE }
+        ]
+    },
+    // === FLIP (34-35) ===
+    {
+        name: "Specchio",
+        // Soluzione: 12×flip=21, 21+21 spariscono
+        solution: "12×flip=21, 21+21 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 12 },
+            { type: SquareType.NUMBER, value: 21 },
+            { type: SquareType.OPERATION, value: OperationType.FLIP }
+        ]
+    },
+    {
+        name: "Palindromo",
+        // Soluzione: flip+flip spariscono, 11+11 spariscono (palindromo non cambia)
+        solution: "flip+flip spariscono, 11+11 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 11 },
+            { type: SquareType.NUMBER, value: 11 },
+            { type: SquareType.OPERATION, value: OperationType.FLIP },
+            { type: SquareType.OPERATION, value: OperationType.FLIP }
+        ]
+    },
+    // === SOMMA CIFRE (36-37) ===
+    {
+        name: "Riduzione",
+        // Soluzione: 234×Σ=9, 9+9 spariscono
+        solution: "234×Σ=9, 9+9 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 234 },
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.OPERATION, value: OperationType.SUM_DIGITS }
+        ]
+    },
+    {
+        name: "Doppia Somma",
+        // Soluzione: 99×Σ=18, 18×Σ=9, 9+9 spariscono
+        solution: "99×Σ=18, 18×Σ=9, 9+9 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 99 },
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.OPERATION, value: OperationType.SUM_DIGITS },
+            { type: SquareType.OPERATION, value: OperationType.SUM_DIGITS }
+        ]
+    },
+    // === SEGNO (38-39) ===
+    {
+        name: "Segno",
+        // Soluzione: 42×sgn=1, -7×sgn=-1, 1+[-1]=0, 0+0 spariscono? No, 0 sparisce da solo
+        // Riprovo: 42×sgn=1, 1+1 spariscono, -7×sgn=-1, -1+-1 spariscono
+        solution: "42×sgn=1, 1+1 spariscono, -7×sgn=-1, -1+-1 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 42 },
+            { type: SquareType.NUMBER, value: 1 },
+            { type: SquareType.NUMBER, value: -7 },
+            { type: SquareType.NUMBER, value: -1 },
+            { type: SquareType.OPERATION, value: OperationType.SIGN },
+            { type: SquareType.OPERATION, value: OperationType.SIGN }
+        ]
+    },
+    {
+        name: "Normalizza",
+        // Soluzione: 100×sgn=1, -50×sgn=-1, 1+[-1]=0, 0+0 spariscono
+        solution: "100×sgn=1, -50×sgn=-1, 1+[-1]=0, 0+0 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 100 },
+            { type: SquareType.NUMBER, value: -50 },
+            { type: SquareType.NUMBER, value: 0 },
+            { type: SquareType.OPERATION, value: OperationType.SIGN },
+            { type: SquareType.OPERATION, value: OperationType.SIGN }
+        ]
+    },
+    // === DIVISIONI (40-42) ===
+    {
+        name: "Divisione Base",
+        // Soluzione: 8×/2=4, 4+4 spariscono
+        solution: "8×/2=4, 4+4 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 8 },
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.OPERATION, value: OperationType.DIVIDE_2 }
+        ]
+    },
+    {
+        name: "Annullamento",
+        // Soluzione: /2+x2=identità (spariscono), 6+6 spariscono
+        solution: "/2+x2=identità (spariscono), 6+6 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 6 },
+            { type: SquareType.NUMBER, value: 6 },
+            { type: SquareType.OPERATION, value: OperationType.DIVIDE_2 },
+            { type: SquareType.OPERATION, value: OperationType.MULTIPLY_2 }
+        ]
+    },
+    {
+        name: "Divisione Tripla",
+        // Soluzione: 9×/3=3, 3+3 spariscono
+        solution: "9×/3=3, 3+3 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 }
+        ]
+    },
+    // === FATTORIALE (43-44) ===
+    {
+        name: "Fattoriale",
+        // Soluzione: 3×n!=6, 6+6 spariscono
+        solution: "3×n!=6, 6+6 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 6 },
+            { type: SquareType.OPERATION, value: OperationType.FACTORIAL }
+        ]
+    },
+    {
+        name: "Fattoriale Grande",
+        // Soluzione: 4×n!=24, 24+24 spariscono
+        solution: "4×n!=24, 24+24 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.NUMBER, value: 24 },
+            { type: SquareType.OPERATION, value: OperationType.FACTORIAL }
+        ]
+    },
+    // === POTENZA DI 2 (45-46) ===
+    {
+        name: "Potenza Due",
+        // Soluzione: 3×2^n=8, 8+8 spariscono
+        solution: "3×2^n=8, 8+8 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 8 },
+            { type: SquareType.OPERATION, value: OperationType.POW_2 }
+        ]
+    },
+    {
+        name: "Potenza Dieci",
+        // Soluzione: 10×2^n=1024, 1024+1024 spariscono
+        solution: "10×2^n=1024, 1024+1024 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 10 },
+            { type: SquareType.NUMBER, value: 1024 },
+            { type: SquareType.OPERATION, value: OperationType.POW_2 }
+        ]
+    },
+    // === POTENZA DI 3 (47-48) ===
+    {
+        name: "Potenza Tre",
+        // Soluzione: 2×3^n=9, 9+9 spariscono
+        solution: "2×3^n=9, 9+9 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 2 },
+            { type: SquareType.NUMBER, value: 9 },
+            { type: SquareType.OPERATION, value: OperationType.POW_3 }
+        ]
+    },
+    {
+        name: "Potenza Ventisette",
+        // Soluzione: 3×3^n=27, 27+27 spariscono
+        solution: "3×3^n=27, 27+27 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 27 },
+            { type: SquareType.OPERATION, value: OperationType.POW_3 }
         ]
     }
 ];
