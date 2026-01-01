@@ -33,6 +33,8 @@ class SquareContent {
                 return 'Eleva al quadrato';
             case OperationType.FLIP:
                 return 'Inverti cifre';
+            case OperationType.SUM_DIGITS:
+                return 'Somma cifre';
         }
     }
 
@@ -53,11 +55,18 @@ function applyOperation(num, operationContent) {
             return Math.abs(num);
         case OperationType.SQUARE:
             return num * num;
-        case OperationType.FLIP:
+        case OperationType.FLIP: {
             // Inverti le cifre del numero, mantieni il segno
             const sign = num < 0 ? -1 : 1;
             const flipped = parseInt(Math.abs(num).toString().split('').reverse().join(''), 10);
             return sign * flipped;
+        }
+        case OperationType.SUM_DIGITS: {
+            // Somma le cifre del numero, mantieni il segno
+            const sign = num < 0 ? -1 : 1;
+            const sum = Math.abs(num).toString().split('').reduce((acc, d) => acc + parseInt(d, 10), 0);
+            return sign * sum;
+        }
     }
 
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
