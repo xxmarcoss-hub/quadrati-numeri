@@ -57,6 +57,8 @@ class SquareContent {
                 return 'Modulo 10 (ultima cifra)';
             case OperationType.SQRT:
                 return 'Radice quadrata (solo quadrati perfetti)';
+            case OperationType.CLONE:
+                return 'Clona (duplica elemento)';
         }
     }
 
@@ -522,6 +524,32 @@ function combineSquares(dragged, target) {
         removeSquare(dragged);
         removeSquare(target);
         checkWin();
+        return;
+    }
+
+    // Caso speciale: CLONE duplica l'altro elemento
+    const isClone1 = content1.type === SquareType.OPERATION && content1.value === OperationType.CLONE;
+    const isClone2 = content2.type === SquareType.OPERATION && content2.value === OperationType.CLONE;
+
+    if (isClone1 || isClone2) {
+        // L'elemento non-clone viene duplicato, clone sparisce
+        const cloneSquare = isClone1 ? dragged : target;
+        const targetSquare = isClone1 ? target : dragged;
+        const targetContent = isClone1 ? content2 : content1;
+
+        // Rimuovi il clone
+        removeSquare(cloneSquare);
+
+        // Crea una copia dell'elemento target
+        setTimeout(() => {
+            const newContent = new SquareContent(targetContent.type, targetContent.value);
+            if (targetContent.composedMultiplier) {
+                newContent.composedMultiplier = targetContent.composedMultiplier;
+            }
+            createSquare(newContent, 0);
+            updateUI();
+            checkWin();
+        }, 300);
         return;
     }
 
