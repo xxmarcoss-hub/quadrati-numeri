@@ -336,6 +336,34 @@ function analyzeAllLevels() {
     return results;
 }
 
+// Estrae il "finale" dall'ultima mossa (la coppia che sparisce per ultima)
+function extractFinale(lastMove) {
+    // L'ultima mossa è del tipo "4+4 spariscono" o "x2+x2 spariscono"
+    const match = lastMove.match(/^(.+)\+.+ spariscono$/);
+    if (match) {
+        return match[1];
+    }
+    return lastMove; // fallback
+}
+
+// Raggruppa le soluzioni per finale
+function groupSolutionsByFinale(solutions) {
+    const groups = {};
+
+    for (const sol of solutions) {
+        if (sol.length === 0) continue;
+        const lastMove = sol[sol.length - 1];
+        const finale = extractFinale(lastMove);
+
+        if (!groups[finale]) {
+            groups[finale] = [];
+        }
+        groups[finale].push(sol);
+    }
+
+    return groups;
+}
+
 // Formatta i risultati per la visualizzazione
 function formatResults(results) {
     let output = '';
@@ -356,14 +384,21 @@ function formatResults(results) {
                 output += `Prime mosse PERICOLOSE: ${r.unsafeFirstMoves.join(', ')}\n`;
             }
 
-            if (r.totalSolutions <= 5) {
-                output += `\nSoluzioni:\n`;
-                r.solutions.forEach((sol, i) => {
-                    output += `  ${i + 1}. ${sol.join(' -> ')}\n`;
-                });
-            } else {
-                output += `\nPrima soluzione:\n`;
-                output += `  ${r.solutions[0].join(' -> ')}\n`;
+            // Raggruppa soluzioni per finale
+            const groupedByFinale = groupSolutionsByFinale(r.solutions);
+            const finali = Object.keys(groupedByFinale);
+
+            output += `\nFinali diversi trovati: ${finali.length} (${finali.join(', ')})\n`;
+
+            for (const finale of finali) {
+                const soluzioniFinale = groupedByFinale[finale];
+                const numDaMostrare = Math.min(5, soluzioniFinale.length);
+
+                output += `\n--- Finale: ${finale}+${finale} (${soluzioniFinale.length} soluzioni, prime ${numDaMostrare}) ---\n`;
+
+                for (let i = 0; i < numDaMostrare; i++) {
+                    output += `  ${i + 1}. ${soluzioniFinale[i].join(' -> ')}\n`;
+                }
             }
         }
     }
