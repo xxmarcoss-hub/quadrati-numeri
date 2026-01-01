@@ -47,6 +47,14 @@ class SquareContent {
                 return 'Potenza di 2 (solo 1-10)';
             case OperationType.POW_3:
                 return 'Potenza di 3 (solo 1-6)';
+            case OperationType.MOD_2:
+                return 'Modulo 2 (resto)';
+            case OperationType.MOD_3:
+                return 'Modulo 3 (resto)';
+            case OperationType.MOD_5:
+                return 'Modulo 5 (resto)';
+            case OperationType.MOD_10:
+                return 'Modulo 10 (ultima cifra)';
         }
     }
 
@@ -93,6 +101,18 @@ function applyOperation(num, operationContent) {
         case OperationType.POW_3:
             // Potenza di 3: 3^n
             return Math.pow(3, num);
+        case OperationType.MOD_2:
+            // Modulo 2 (sempre positivo)
+            return ((num % 2) + 2) % 2;
+        case OperationType.MOD_3:
+            // Modulo 3 (sempre positivo)
+            return ((num % 3) + 3) % 3;
+        case OperationType.MOD_5:
+            // Modulo 5 (sempre positivo)
+            return ((num % 5) + 5) % 5;
+        case OperationType.MOD_10:
+            // Modulo 10 (sempre positivo - ultima cifra)
+            return ((num % 10) + 10) % 10;
     }
 
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
