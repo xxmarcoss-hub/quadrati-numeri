@@ -17,11 +17,12 @@ const OperationType = {
     SQUARE: 'x²',
     FLIP: 'flip',
     SUM_DIGITS: 'Σ',
-    SIGN: 'sgn'
+    SIGN: 'sgn',
+    FACTORIAL: 'n!'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -37,7 +38,8 @@ const DifficultyCategory = {
     FLIP: { name: 'Inversione Cifre', range: [33, 34] },
     SUM_DIGITS: { name: 'Somma Cifre', range: [35, 36] },
     SIGN: { name: 'Segno', range: [37, 38] },
-    DIVIDE: { name: 'Divisioni', range: [39, 41] }
+    DIVIDE: { name: 'Divisioni', range: [39, 41] },
+    FACTORIAL: { name: 'Fattoriale', range: [42, 43] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -586,6 +588,27 @@ const levels = [
             { type: SquareType.NUMBER, value: 9 },
             { type: SquareType.NUMBER, value: 3 },
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 }
+        ]
+    },
+    // === FATTORIALE (43-44) ===
+    {
+        name: "Fattoriale",
+        // Soluzione: 3×n!=6, 6+6 spariscono
+        solution: "3×n!=6, 6+6 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 6 },
+            { type: SquareType.OPERATION, value: OperationType.FACTORIAL }
+        ]
+    },
+    {
+        name: "Fattoriale Grande",
+        // Soluzione: 4×n!=24, 24+24 spariscono
+        solution: "4×n!=24, 24+24 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.NUMBER, value: 24 },
+            { type: SquareType.OPERATION, value: OperationType.FACTORIAL }
         ]
     }
 ];
