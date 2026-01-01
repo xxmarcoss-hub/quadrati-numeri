@@ -59,6 +59,8 @@ class SquareContent {
                 return 'Radice quadrata (solo quadrati perfetti)';
             case OperationType.CLONE:
                 return 'Clona (duplica elemento)';
+            case OperationType.DIVISORS:
+                return 'Divisori (esplode in divisori)';
         }
     }
 
@@ -216,8 +218,25 @@ function canApplyOperation(num, operationContent) {
         return Number.isInteger(sqrt);
     }
 
+    // Divisori: solo numeri interi > 1, limite a 100 per evitare troppi divisori
+    if (opValue === OperationType.DIVISORS) {
+        return Number.isInteger(num) && num > 1 && num <= 100;
+    }
+
     // Tutte le altre operazioni sono sempre applicabili
     return true;
+}
+
+// Funzione per ottenere i divisori > 1 di un numero
+function getDivisors(num) {
+    const divisors = [];
+    const absNum = Math.abs(num);
+    for (let i = 2; i <= absNum; i++) {
+        if (absNum % i === 0) {
+            divisors.push(i);
+        }
+    }
+    return divisors;
 }
 
 // Funzione per comporre due operazioni
@@ -547,6 +566,43 @@ function combineSquares(dragged, target) {
                 newContent.composedMultiplier = targetContent.composedMultiplier;
             }
             createSquare(newContent, 0);
+            updateUI();
+            checkWin();
+        }, 300);
+        return;
+    }
+
+    // Caso speciale: DIVISORS esplode un numero nei suoi divisori
+    const isDivisors1 = content1.type === SquareType.OPERATION && content1.value === OperationType.DIVISORS;
+    const isDivisors2 = content2.type === SquareType.OPERATION && content2.value === OperationType.DIVISORS;
+
+    if ((isDivisors1 && content2.type === SquareType.NUMBER) ||
+        (isDivisors2 && content1.type === SquareType.NUMBER)) {
+        const numContent = isDivisors1 ? content2 : content1;
+        const num = numContent.value;
+
+        // Verifica applicabilità
+        if (!canApplyOperation(num, { value: OperationType.DIVISORS })) {
+            dragged.classList.add('rejected');
+            target.classList.add('rejected');
+            setTimeout(() => {
+                dragged.classList.remove('rejected');
+                target.classList.remove('rejected');
+            }, 300);
+            return;
+        }
+
+        // Rimuovi entrambi gli elementi
+        removeSquare(dragged);
+        removeSquare(target);
+
+        // Crea un quadrato per ogni divisore > 1
+        const divisors = getDivisors(num);
+        setTimeout(() => {
+            divisors.forEach((div, index) => {
+                const newContent = new SquareContent(SquareType.NUMBER, div);
+                createSquare(newContent, index * 100);
+            });
             updateUI();
             checkWin();
         }, 300);

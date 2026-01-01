@@ -26,11 +26,12 @@ const OperationType = {
     MOD_5: '%5',
     MOD_10: '%10',
     SQRT: '√',
-    CLONE: '⊕'
+    CLONE: '⊕',
+    DIVISORS: '÷→'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3, OperationType.MOD_2, OperationType.MOD_3, OperationType.MOD_5, OperationType.MOD_10, OperationType.SQRT, OperationType.CLONE];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2, OperationType.POW_3, OperationType.MOD_2, OperationType.MOD_3, OperationType.MOD_5, OperationType.MOD_10, OperationType.SQRT, OperationType.CLONE, OperationType.DIVISORS];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -52,7 +53,8 @@ const DifficultyCategory = {
     POW_3: { name: 'Potenza di 3', range: [46, 47] },
     MODULO: { name: 'Modulo', range: [48, 51] },
     SQRT: { name: 'Radice Quadrata', range: [52, 54] },
-    CLONE: { name: 'Clone', range: [55, 56] }
+    CLONE: { name: 'Clone', range: [55, 56] },
+    DIVISORS: { name: 'Divisori', range: [57, 58] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -758,6 +760,29 @@ const levels = [
             { type: SquareType.NUMBER, value: 5 },
             { type: SquareType.NUMBER, value: 5 },
             { type: SquareType.OPERATION, value: OperationType.CLONE }
+        ]
+    },
+    // === DIVISORI (58-59) ===
+    {
+        name: "Esplosione Primo",
+        // Soluzione: 7×÷→=7 (numero primo crea solo se stesso), 7+7 spariscono
+        solution: "7×÷→=7, 7+7 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 7 },
+            { type: SquareType.NUMBER, value: 7 },
+            { type: SquareType.OPERATION, value: OperationType.DIVISORS }
+        ]
+    },
+    {
+        name: "Esplosione Sei",
+        // Soluzione: 6×÷→=[2,3,6], 2+2 spariscono, 3+3 spariscono, 6+6 spariscono
+        solution: "6×÷→=[2,3,6], 2+2 spariscono, 3+3 spariscono, 6+6 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 6 },
+            { type: SquareType.NUMBER, value: 2 },
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 6 },
+            { type: SquareType.OPERATION, value: OperationType.DIVISORS }
         ]
     }
 ];
