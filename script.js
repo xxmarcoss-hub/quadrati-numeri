@@ -43,6 +43,8 @@ class SquareContent {
                 return 'Estrai segno';
             case OperationType.FACTORIAL:
                 return 'Fattoriale (solo 1-6)';
+            case OperationType.POW_2:
+                return 'Potenza di 2 (solo 1-10)';
         }
     }
 
@@ -83,6 +85,9 @@ function applyOperation(num, operationContent) {
             const factorials = [1, 1, 2, 6, 24, 120, 720];
             return factorials[num];
         }
+        case OperationType.POW_2:
+            // Potenza di 2: 2^n
+            return Math.pow(2, num);
     }
 
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
@@ -160,6 +165,11 @@ function canApplyOperation(num, operationContent) {
     // Fattoriale: solo numeri da 1 a 6
     if (opValue === OperationType.FACTORIAL) {
         return Number.isInteger(num) && num >= 1 && num <= 6;
+    }
+
+    // Potenza di 2: solo numeri da 1 a 10
+    if (opValue === OperationType.POW_2) {
+        return Number.isInteger(num) && num >= 1 && num <= 10;
     }
 
     // Tutte le altre operazioni sono sempre applicabili

@@ -18,11 +18,12 @@ const OperationType = {
     FLIP: 'flip',
     SUM_DIGITS: 'Σ',
     SIGN: 'sgn',
-    FACTORIAL: 'n!'
+    FACTORIAL: 'n!',
+    POW_2: '2^n'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP, OperationType.SUM_DIGITS, OperationType.SIGN, OperationType.FACTORIAL, OperationType.POW_2];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -39,7 +40,8 @@ const DifficultyCategory = {
     SUM_DIGITS: { name: 'Somma Cifre', range: [35, 36] },
     SIGN: { name: 'Segno', range: [37, 38] },
     DIVIDE: { name: 'Divisioni', range: [39, 41] },
-    FACTORIAL: { name: 'Fattoriale', range: [42, 43] }
+    FACTORIAL: { name: 'Fattoriale', range: [42, 43] },
+    POW_2: { name: 'Potenza di 2', range: [44, 45] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -609,6 +611,27 @@ const levels = [
             { type: SquareType.NUMBER, value: 4 },
             { type: SquareType.NUMBER, value: 24 },
             { type: SquareType.OPERATION, value: OperationType.FACTORIAL }
+        ]
+    },
+    // === POTENZA DI 2 (45-46) ===
+    {
+        name: "Potenza Due",
+        // Soluzione: 3×2^n=8, 8+8 spariscono
+        solution: "3×2^n=8, 8+8 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: 8 },
+            { type: SquareType.OPERATION, value: OperationType.POW_2 }
+        ]
+    },
+    {
+        name: "Potenza Dieci",
+        // Soluzione: 10×2^n=1024, 1024+1024 spariscono
+        solution: "10×2^n=1024, 1024+1024 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 10 },
+            { type: SquareType.NUMBER, value: 1024 },
+            { type: SquareType.OPERATION, value: OperationType.POW_2 }
         ]
     }
 ];
