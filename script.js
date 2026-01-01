@@ -416,26 +416,11 @@ function handleDragStart(e) {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', this.dataset.id);
 
-    // Crea un clone isolato per l'immagine drag
-    const dragImage = this.cloneNode(true);
-    dragImage.style.position = 'absolute';
-    dragImage.style.top = '-1000px';
-    dragImage.style.left = '-1000px';
-    dragImage.style.opacity = '0.9';
-    dragImage.style.transform = 'scale(1.1)';
-    dragImage.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.4)';
-    document.body.appendChild(dragImage);
-
-    // Usa il clone come immagine drag (centrato)
-    e.dataTransfer.setDragImage(dragImage, 40, 40);
-
-    // Rimuovi il clone dopo che il browser l'ha catturato
+    // Nasconde l'elemento originale dopo che il browser ha catturato l'immagine drag
+    const element = this;
     requestAnimationFrame(() => {
-        dragImage.remove();
+        element.classList.add('dragging');
     });
-
-    // Nascondi l'elemento originale
-    this.classList.add('dragging');
 }
 
 function handleDragEnd(e) {
