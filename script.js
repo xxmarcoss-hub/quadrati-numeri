@@ -60,7 +60,7 @@ class SquareContent {
             case OperationType.CLONE:
                 return 'Clona (duplica elemento)';
             case OperationType.DIVISORS:
-                return 'Divisori (esplode in divisori)';
+                return 'Fattori primi (scompone in fattori)';
         }
     }
 
@@ -227,16 +227,31 @@ function canApplyOperation(num, operationContent) {
     return true;
 }
 
-// Funzione per ottenere i divisori > 1 di un numero
-function getDivisors(num) {
-    const divisors = [];
-    const absNum = Math.abs(num);
-    for (let i = 2; i <= absNum; i++) {
-        if (absNum % i === 0) {
-            divisors.push(i);
+// Funzione per ottenere i fattori primi di un numero (con ripetizioni)
+function getPrimeFactors(num) {
+    const factors = [];
+    let n = Math.abs(num);
+
+    // Estrai tutti i fattori 2
+    while (n % 2 === 0) {
+        factors.push(2);
+        n = n / 2;
+    }
+
+    // Estrai i fattori dispari
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            factors.push(i);
+            n = n / i;
         }
     }
-    return divisors;
+
+    // Se rimane un numero primo > 2
+    if (n > 2) {
+        factors.push(n);
+    }
+
+    return factors;
 }
 
 // Funzione per comporre due operazioni
@@ -602,8 +617,8 @@ function combineSquares(dragged, target) {
         removeSquare(dragged);
         removeSquare(target);
 
-        // Crea un quadrato per ogni divisore > 1
-        const divisors = getDivisors(num);
+        // Crea un quadrato per ogni fattore primo
+        const divisors = getPrimeFactors(num);
         setTimeout(() => {
             divisors.forEach((div, index) => {
                 const newContent = new SquareContent(SquareType.NUMBER, div);
