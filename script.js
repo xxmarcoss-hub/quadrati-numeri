@@ -55,6 +55,8 @@ class SquareContent {
                 return 'Modulo 5 (resto)';
             case OperationType.MOD_10:
                 return 'Modulo 10 (ultima cifra)';
+            case OperationType.SQRT:
+                return 'Radice quadrata (solo quadrati perfetti)';
         }
     }
 
@@ -113,6 +115,9 @@ function applyOperation(num, operationContent) {
         case OperationType.MOD_10:
             // Modulo 10 (sempre positivo - ultima cifra)
             return ((num % 10) + 10) % 10;
+        case OperationType.SQRT:
+            // Radice quadrata
+            return Math.sqrt(num);
     }
 
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
@@ -200,6 +205,13 @@ function canApplyOperation(num, operationContent) {
     // Potenza di 3: solo numeri da 1 a 6
     if (opValue === OperationType.POW_3) {
         return Number.isInteger(num) && num >= 1 && num <= 6;
+    }
+
+    // Radice quadrata: solo quadrati perfetti positivi
+    if (opValue === OperationType.SQRT) {
+        if (num < 0) return false;
+        const sqrt = Math.sqrt(num);
+        return Number.isInteger(sqrt);
     }
 
     // Tutte le altre operazioni sono sempre applicabili
@@ -549,6 +561,16 @@ function combineSquares(dragged, target) {
         // Operazione + Operazione = Compone (solo se entrambe non-speciali)
         const isSpecial1 = content1.isSpecialOperation();
         const isSpecial2 = content2.isSpecialOperation();
+
+        // Caso speciale: √ + x² = identità (si annullano)
+        const isSqrtSquareCombo = (content1.value === OperationType.SQRT && content2.value === OperationType.SQUARE) ||
+                                   (content1.value === OperationType.SQUARE && content2.value === OperationType.SQRT);
+        if (isSqrtSquareCombo) {
+            removeSquare(dragged);
+            removeSquare(target);
+            checkWin();
+            return;
+        }
 
         // Le operazioni speciali non si compongono tra loro né con altre operazioni
         if (isSpecial1 || isSpecial2) {
