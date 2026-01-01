@@ -27,12 +27,28 @@ class SquareContent {
                 return 'Moltiplica per 3';
             case OperationType.NEGATE:
                 return 'Inverti segno';
+            case OperationType.ABS:
+                return 'Valore assoluto';
         }
+    }
+
+    // Verifica se l'operazione è speciale (non componibile)
+    isSpecialOperation() {
+        return this.type === SquareType.OPERATION &&
+               SpecialOperations.includes(this.value);
     }
 }
 
 // Funzione per applicare un'operazione a un numero
 function applyOperation(num, operationContent) {
+    // Gestisci operazioni speciali
+    const opValue = typeof operationContent === 'object' ? operationContent.value : operationContent;
+
+    switch (opValue) {
+        case OperationType.ABS:
+            return Math.abs(num);
+    }
+
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
     if (typeof operationContent === 'object') {
         return num * getMultiplier(operationContent);
@@ -191,7 +207,9 @@ function createSquare(content, delay = 0) {
         else square.classList.add('zero');
     } else {
         square.classList.add('operation');
-        if (content.value === OperationType.NEGATE) {
+        if (content.isSpecialOperation()) {
+            square.classList.add('special');
+        } else if (content.value === OperationType.NEGATE) {
             square.classList.add('negate');
         } else {
             square.classList.add('multiply');
@@ -383,7 +401,22 @@ function combineSquares(dragged, target) {
         // Operazione + Numero = Applica operazione
         result = new SquareContent(SquareType.NUMBER, applyOperation(content2.value, content1));
     } else {
-        // Operazione + Operazione = Compone
+        // Operazione + Operazione = Compone (solo se entrambe non-speciali)
+        const isSpecial1 = content1.isSpecialOperation();
+        const isSpecial2 = content2.isSpecialOperation();
+
+        // Le operazioni speciali non si compongono tra loro né con altre operazioni
+        if (isSpecial1 || isSpecial2) {
+            // Rifiuta la combinazione - feedback visivo
+            dragged.classList.add('rejected');
+            target.classList.add('rejected');
+            setTimeout(() => {
+                dragged.classList.remove('rejected');
+                target.classList.remove('rejected');
+            }, 300);
+            return;
+        }
+
         const composed = composeOperations(content1, content2);
         if (composed.type === 'identity') {
             // Le operazioni si annullano
@@ -428,7 +461,9 @@ function createSquareFromResult(content, insertBeforeElement = null) {
         square.dataset.tooltip = `Numero: ${content.value}`;
     } else {
         square.classList.add('operation');
-        if (content.composedMultiplier && content.composedMultiplier < 0) {
+        if (content.isSpecialOperation()) {
+            square.classList.add('special');
+        } else if (content.composedMultiplier && content.composedMultiplier < 0) {
             square.classList.add('negate');
         } else {
             square.classList.add('multiply');
