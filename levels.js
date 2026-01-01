@@ -12,11 +12,12 @@ const OperationType = {
     NEGATE: '+-',
     // Operazioni speciali (non componibili)
     ABS: '|x|',
-    SQUARE: 'x²'
+    SQUARE: 'x²',
+    FLIP: 'flip'
 };
 
 // Operazioni speciali: non si compongono con altre operazioni
-const SpecialOperations = [OperationType.ABS, OperationType.SQUARE];
+const SpecialOperations = [OperationType.ABS, OperationType.SQUARE, OperationType.FLIP];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -28,7 +29,8 @@ const DifficultyCategory = {
     FINAL: { name: 'Sfida Finale', range: [20, 24] },
     TRASH: { name: 'Cestino', range: [25, 28] },
     ABS: { name: 'Valore Assoluto', range: [29, 30] },
-    SQUARE: { name: 'Quadrato', range: [31, 32] }
+    SQUARE: { name: 'Quadrato', range: [31, 32] },
+    FLIP: { name: 'Inversione Cifre', range: [33, 34] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -474,6 +476,28 @@ const levels = [
             { type: SquareType.NUMBER, value: -3 },
             { type: SquareType.NUMBER, value: 9 },
             { type: SquareType.OPERATION, value: OperationType.SQUARE }
+        ]
+    },
+    // === FLIP (34-35) ===
+    {
+        name: "Specchio",
+        // Soluzione: 12×flip=21, 21+21 spariscono
+        solution: "12×flip=21, 21+21 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 12 },
+            { type: SquareType.NUMBER, value: 21 },
+            { type: SquareType.OPERATION, value: OperationType.FLIP }
+        ]
+    },
+    {
+        name: "Palindromo",
+        // Soluzione: flip+flip spariscono, 11+11 spariscono (palindromo non cambia)
+        solution: "flip+flip spariscono, 11+11 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 11 },
+            { type: SquareType.NUMBER, value: 11 },
+            { type: SquareType.OPERATION, value: OperationType.FLIP },
+            { type: SquareType.OPERATION, value: OperationType.FLIP }
         ]
     }
 ];
