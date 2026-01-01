@@ -103,8 +103,7 @@ h1 {
 }
 
 .square.dragging {
-    opacity: 0;
-    pointer-events: none;
+    opacity: 0 !important;
 }
 
 .square.drag-over {
