@@ -41,6 +41,8 @@ class SquareContent {
                 return 'Somma cifre';
             case OperationType.SIGN:
                 return 'Estrai segno';
+            case OperationType.FACTORIAL:
+                return 'Fattoriale (solo 1-6)';
         }
     }
 
@@ -76,6 +78,11 @@ function applyOperation(num, operationContent) {
         case OperationType.SIGN:
             // Restituisce il segno: 1, -1, o 0
             return num > 0 ? 1 : (num < 0 ? -1 : 0);
+        case OperationType.FACTORIAL: {
+            // Fattoriale: 1!=1, 2!=2, 3!=6, 4!=24, 5!=120, 6!=720
+            const factorials = [1, 1, 2, 6, 24, 120, 720];
+            return factorials[num];
+        }
     }
 
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
@@ -148,6 +155,11 @@ function canApplyOperation(num, operationContent) {
     if (multiplier && multiplier < 1 && multiplier > 0) {
         const divisor = Math.round(1 / multiplier);
         return num % divisor === 0;
+    }
+
+    // Fattoriale: solo numeri da 1 a 6
+    if (opValue === OperationType.FACTORIAL) {
+        return Number.isInteger(num) && num >= 1 && num <= 6;
     }
 
     // Tutte le altre operazioni sono sempre applicabili
