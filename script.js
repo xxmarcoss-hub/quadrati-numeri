@@ -31,6 +31,8 @@ class SquareContent {
                 return 'Valore assoluto';
             case OperationType.SQUARE:
                 return 'Eleva al quadrato';
+            case OperationType.FLIP:
+                return 'Inverti cifre';
         }
     }
 
@@ -51,6 +53,11 @@ function applyOperation(num, operationContent) {
             return Math.abs(num);
         case OperationType.SQUARE:
             return num * num;
+        case OperationType.FLIP:
+            // Inverti le cifre del numero, mantieni il segno
+            const sign = num < 0 ? -1 : 1;
+            const flipped = parseInt(Math.abs(num).toString().split('').reverse().join(''), 10);
+            return sign * flipped;
     }
 
     // Se è un contenuto con composedMultiplier o getMultiplier può gestirlo
