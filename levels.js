@@ -6,10 +6,16 @@ const SquareType = {
 
 // Tipi di operazioni
 const OperationType = {
+    // Operazioni moltiplicative (si compongono tra loro)
     MULTIPLY_2: 'x2',
     MULTIPLY_3: 'x3',
-    NEGATE: '+-'
+    NEGATE: '+-',
+    // Operazioni speciali (non componibili)
+    ABS: '|x|'
 };
+
+// Operazioni speciali: non si compongono con altre operazioni
+const SpecialOperations = [OperationType.ABS];
 
 // Categorie di difficoltà
 const DifficultyCategory = {
@@ -19,7 +25,8 @@ const DifficultyCategory = {
     HARD: { name: 'Difficile', range: [12, 15] },
     EXPERT: { name: 'Esperto', range: [16, 19] },
     FINAL: { name: 'Sfida Finale', range: [20, 24] },
-    TRASH: { name: 'Cestino', range: [25, 28] }
+    TRASH: { name: 'Cestino', range: [25, 28] },
+    ABS: { name: 'Valore Assoluto', range: [29, 30] }
 };
 
 // Funzione helper per ottenere la categoria di difficoltà di un livello
@@ -420,6 +427,30 @@ const levels = [
             { type: SquareType.NUMBER, value: 6 },
             { type: SquareType.NUMBER, value: 17 },
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_2 }
+        ]
+    },
+    // === VALORE ASSOLUTO (30-31) ===
+    {
+        name: "Assoluto",
+        // Soluzione: -5×|x|=5, 5+5 spariscono
+        solution: "-5×|x|=5, 5+5 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 5 },
+            { type: SquareType.NUMBER, value: -5 },
+            { type: SquareType.OPERATION, value: OperationType.ABS }
+        ]
+    },
+    {
+        name: "Specchio Assoluto",
+        // Soluzione: -3×|x|=3, 3+3 spariscono, -7×|x|=7, 7+7 spariscono
+        solution: "-3×|x|=3, 3+3 spariscono, -7×|x|=7, 7+7 spariscono",
+        squares: [
+            { type: SquareType.NUMBER, value: 3 },
+            { type: SquareType.NUMBER, value: -3 },
+            { type: SquareType.NUMBER, value: 7 },
+            { type: SquareType.NUMBER, value: -7 },
+            { type: SquareType.OPERATION, value: OperationType.ABS },
+            { type: SquareType.OPERATION, value: OperationType.ABS }
         ]
     }
 ];
