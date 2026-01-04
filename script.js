@@ -445,7 +445,11 @@ function createSquare(content, delay = 0) {
     }
 
     square.textContent = content.toString();
-    square.dataset.tooltip = content.getTooltip();
+
+    // Tooltip solo per operazioni, non per numeri
+    if (content.type === SquareType.OPERATION) {
+        square.dataset.tooltip = content.getTooltip();
+    }
 
     // Salva il contenuto nell'elemento
     square.squareContent = content;
@@ -810,7 +814,7 @@ function createSquareFromResult(content, insertBeforeElement = null) {
         else if (content.value < 0) square.classList.add('negative');
         else square.classList.add('zero');
         square.textContent = content.value.toString();
-        square.dataset.tooltip = `Numero: ${content.value}`;
+        // Nessun tooltip per numeri - si spiegano da soli
     } else {
         square.classList.add('operation');
         if (content.isSpecialOperation()) {
