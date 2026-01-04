@@ -764,12 +764,13 @@ const levels = [
     },
     // === DIVISORI (58-59) ===
     {
-        name: "Esplosione Primo",
-        // Soluzione: 7×÷→=7 (numero primo crea solo se stesso), 7+7 spariscono
-        solution: "7×÷→=7, 7+7 spariscono",
+        name: "Esplosione Quattro",
+        // Soluzione: 4×÷→=[2,2], 2+2 spariscono, 2+2 spariscono
+        solution: "4×÷→=[2,2], 2+2 spariscono, 2+2 spariscono",
         squares: [
-            { type: SquareType.NUMBER, value: 7 },
-            { type: SquareType.NUMBER, value: 7 },
+            { type: SquareType.NUMBER, value: 4 },
+            { type: SquareType.NUMBER, value: 2 },
+            { type: SquareType.NUMBER, value: 2 },
             { type: SquareType.OPERATION, value: OperationType.DIVISORS }
         ]
     },
