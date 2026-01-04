@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Generatore Livelli</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            background: #4a4a8a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #6a6aaa;
+        }
+        #output {
+            white-space: pre-wrap;
+            background: #0a0a1a;
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 600px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .level-preview {
+            background: #2a2a4a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .level-preview h4 {
+            margin: 0 0 10px 0;
+            color: #8af;
+        }
+        .squares {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .square {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .square.number {
+            background: #4a8;
+        }
+        .square.operation {
+            background: #a48;
+        }
+        .solution {
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .stats {
+            background: #2a4a2a;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generatore Livelli - Test</h1>
+
+    <div>
+        <button onclick="testSingleLevel()">Test Singolo Livello</button>
+        <button onclick="generateAll()">Genera 100 Livelli</button>
+        <button onclick="exportLevels()">Esporta per levels.js</button>
+        <button onclick="verifyLevels()">Verifica con Solver</button>
+    </div>
+
+    <div class="stats" id="stats" style="display:none;"></div>
+    <div id="output"></div>
+
+    <script src="levels.js"></script>
+    <script src="solver.js"></script>
+    <script src="generator.js"></script>
+    <script>
+        let generatedLevels = [];
+
+        function testSingleLevel() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<h3>Test Singolo Livello</h3>';
+
+            // Test con valore 6, difficoltà 20
+            const level = generateLevel(6, 25, {
+                maxSquares: 8,
+                name: "Test Level"
+            });
+
+            output.innerHTML += renderLevelPreview(level, 0);
+
+            // Mostra trasformazioni disponibili per alcuni numeri
+            output.innerHTML += '<h3>Trasformazioni inverse disponibili</h3>';
+            for (const n of [5, 6, 8, 12, 24, -5]) {
+                const transforms = getInverseTransforms(n);
+                output.innerHTML += `<p><strong>${n}</strong>: ${transforms.map(t => t.type).join(', ')}</p>`;
+            }
+        }
+
+        function generateAll() {
+            const output = document.getElementById('output');
+            const stats = document.getElementById('stats');
+            output.innerHTML = '<h3>Generazione 100 Livelli...</h3>';
+
+            generatedLevels = generate100Levels();
+
+            // Statistiche
+            const totalSquares = generatedLevels.reduce((sum, l) => sum + l.squares.length, 0);
+            const avgSquares = (totalSquares / generatedLevels.length).toFixed(1);
+            const minSquares = Math.min(...generatedLevels.map(l => l.squares.length));
+            const maxSquares = Math.max(...generatedLevels.map(l => l.squares.length));
+
+            stats.style.display = 'block';
+            stats.innerHTML = `
+                <strong>Statistiche:</strong><br>
+                Livelli generati: ${generatedLevels.length}<br>
+                Quadrati totali: ${totalSquares}<br>
+                Media quadrati/livello: ${avgSquares}<br>
+                Min quadrati: ${minSquares}, Max quadrati: ${maxSquares}
+            `;
+
+            // Mostra preview di alcuni livelli
+            output.innerHTML = '<h3>100 Livelli Generati</h3>';
+
+            // Mostra tutti i livelli raggruppati
+            const categories = [
+                { name: 'Tutorial (1-10)', start: 0, end: 10 },
+                { name: 'Facile (11-25)', start: 10, end: 25 },
+                { name: 'Medio (26-45)', start: 25, end: 45 },
+                { name: 'Difficile (46-70)', start: 45, end: 70 },
+                { name: 'Esperto (71-90)', start: 70, end: 90 },
+                { name: 'Maestro (91-100)', start: 90, end: 100 }
+            ];
+
+            for (const cat of categories) {
+                output.innerHTML += `<h3>${cat.name}</h3>`;
+                for (let i = cat.start; i < cat.end && i < generatedLevels.length; i++) {
+                    output.innerHTML += renderLevelPreview(generatedLevels[i], i);
+                }
+            }
+        }
+
+        function renderLevelPreview(level, index) {
+            let html = `<div class="level-preview">`;
+            html += `<h4>${index + 1}. ${level.name} (${level.squares.length} quadrati, diff: ${level.generatedDifficulty || '?'})</h4>`;
+            html += `<div class="squares">`;
+
+            for (const sq of level.squares) {
+                if (sq.type === 'number') {
+                    html += `<span class="square number">${sq.value}</span>`;
+                } else {
+                    html += `<span class="square operation">${sq.value}</span>`;
+                }
+            }
+
+            html += `</div>`;
+            html += `<div class="solution">Soluzione: ${level.solution}</div>`;
+            html += `</div>`;
+            return html;
+        }
+
+        function exportLevels() {
+            if (generatedLevels.length === 0) {
+                alert('Prima genera i livelli!');
+                return;
+            }
+
+            const output = document.getElementById('output');
+            const exported = formatLevelsForExport(generatedLevels);
+
+            output.innerHTML = `<h3>Codice per levels.js</h3><pre>${escapeHtml(exported)}</pre>`;
+
+            // Copia negli appunti
+            navigator.clipboard.writeText(exported).then(() => {
+                alert('Codice copiato negli appunti!');
+            });
+        }
+
+        function verifyLevels() {
+            if (generatedLevels.length === 0) {
+                alert('Prima genera i livelli!');
+                return;
+            }
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<h3>Verifica Livelli con Solver...</h3>';
+
+            // Sostituisci temporaneamente levels globale
+            const originalLevels = window.levels;
+            window.levels = generatedLevels;
+
+            let solvable = 0;
+            let unsolvable = [];
+
+            for (let i = 0; i < generatedLevels.length; i++) {
+                try {
+                    const result = analyzeLevel(i);
+                    if (result.isSolvable) {
+                        solvable++;
+                    } else {
+                        unsolvable.push({ index: i + 1, name: generatedLevels[i].name });
+                    }
+                } catch (e) {
+                    unsolvable.push({ index: i + 1, name: generatedLevels[i].name, error: e.message });
+                }
+            }
+
+            // Ripristina
+            window.levels = originalLevels;
+
+            output.innerHTML += `<p><strong>Risolvibili:</strong> ${solvable}/${generatedLevels.length}</p>`;
+
+            if (unsolvable.length > 0) {
+                output.innerHTML += `<p style="color: #f88;"><strong>NON risolvibili:</strong></p><ul>`;
+                for (const u of unsolvable) {
+                    output.innerHTML += `<li>${u.index}. ${u.name} ${u.error ? `(${u.error})` : ''}</li>`;
+                }
+                output.innerHTML += `</ul>`;
+            } else {
+                output.innerHTML += `<p style="color: #8f8;">Tutti i livelli sono risolvibili!</p>`;
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    </script>
+</body>
+</html>

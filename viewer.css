@@ -137,12 +137,8 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.difficulty-badge.sfida-finale {
+.difficulty-badge.maestro {
     background: linear-gradient(135deg, #e94560 0%, #0f3460 100%);
-}
-
-.difficulty-badge.cestino {
-    background: linear-gradient(135deg, #6b7280 0%, #374151 100%);
 }
 
 /* Mini squares preview */
