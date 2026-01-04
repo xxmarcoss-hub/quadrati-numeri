@@ -303,13 +303,136 @@ let gameState = {
     squares: [],
     draggedSquare: null,
     trashSlotsTotal: 0,
-    trashSlotsUsed: 0
+    trashSlotsUsed: 0,
+    isExploding: false,
+    history: [],      // Stack per undo
+    future: []        // Stack per redo
 };
+
+// Controlla se un valore supera il limite massimo del livello
+function checkOverflow(value) {
+    const level = levels[gameState.currentLevel];
+    const limit = level.maxValue || 9999;
+    return Math.abs(value) > limit;
+}
+
+// Attiva l'esplosione (game over)
+function triggerExplosion(value, square) {
+    if (gameState.isExploding) return;
+    gameState.isExploding = true;
+
+    const level = levels[gameState.currentLevel];
+    const limit = level.maxValue || 9999;
+
+    // Animazione esplosione sul quadrato
+    if (square) {
+        square.classList.add('exploding');
+    }
+
+    // Mostra messaggio di overflow
+    setTimeout(() => {
+        messageEl.classList.add('overflow');
+        showMessage('OVERFLOW!', `Limite superato: ${Math.abs(value)} > ${limit}`);
+
+        // Reset dopo 2 secondi
+        setTimeout(() => {
+            hideMessage();
+            gameState.isExploding = false;
+            loadLevel(gameState.currentLevel);
+        }, 2000);
+    }, 500);
+}
+
+// Salva lo stato corrente per undo
+function saveState() {
+    const state = {
+        squares: gameState.squares.map(s => ({
+            type: s.content.type,
+            value: s.content.value,
+            composedMultiplier: s.content.composedMultiplier
+        })),
+        trashSlotsUsed: gameState.trashSlotsUsed
+    };
+    gameState.history.push(state);
+    gameState.future = []; // Pulisce redo quando si fa una nuova mossa
+    updateUndoRedoButtons();
+}
+
+// Undo: ripristina lo stato precedente
+function undo() {
+    if (gameState.history.length === 0 || gameState.isExploding) return;
+
+    // Salva stato corrente per redo
+    const currentState = {
+        squares: gameState.squares.map(s => ({
+            type: s.content.type,
+            value: s.content.value,
+            composedMultiplier: s.content.composedMultiplier
+        })),
+        trashSlotsUsed: gameState.trashSlotsUsed
+    };
+    gameState.future.push(currentState);
+
+    // Ripristina stato precedente
+    const prevState = gameState.history.pop();
+    restoreState(prevState);
+}
+
+// Redo: ripristina la mossa annullata
+function redo() {
+    if (gameState.future.length === 0 || gameState.isExploding) return;
+
+    // Salva stato corrente per undo
+    const currentState = {
+        squares: gameState.squares.map(s => ({
+            type: s.content.type,
+            value: s.content.value,
+            composedMultiplier: s.content.composedMultiplier
+        })),
+        trashSlotsUsed: gameState.trashSlotsUsed
+    };
+    gameState.history.push(currentState);
+
+    // Ripristina stato successivo
+    const nextState = gameState.future.pop();
+    restoreState(nextState);
+}
+
+// Ripristina uno stato salvato
+function restoreState(state) {
+    // Rimuovi tutti i quadrati correnti senza animazione
+    gameArea.innerHTML = '';
+    gameState.squares = [];
+
+    // Ricrea i quadrati dallo stato salvato
+    state.squares.forEach((sq, index) => {
+        const content = new SquareContent(sq.type, sq.value);
+        if (sq.composedMultiplier) {
+            content.composedMultiplier = sq.composedMultiplier;
+        }
+        createSquare(content, index * 30);
+    });
+
+    // Ripristina cestino
+    gameState.trashSlotsUsed = state.trashSlotsUsed;
+
+    updateUI();
+    updateUndoRedoButtons();
+}
+
+// Aggiorna stato pulsanti undo/redo
+function updateUndoRedoButtons() {
+    const btnUndo = document.getElementById('btn-undo');
+    const btnRedo = document.getElementById('btn-redo');
+    if (btnUndo) btnUndo.disabled = gameState.history.length === 0;
+    if (btnRedo) btnRedo.disabled = gameState.future.length === 0;
+}
 
 // Elementi DOM
 const gameArea = document.getElementById('game-area');
 const levelNumber = document.getElementById('level-number');
 const squaresCount = document.getElementById('squares-count');
+const maxValueDisplay = document.getElementById('max-value');
 const btnReset = document.getElementById('btn-reset');
 const btnPrev = document.getElementById('btn-prev');
 const btnNext = document.getElementById('btn-next');
@@ -349,10 +472,18 @@ function shuffleArray(array) {
 function loadLevel(levelIndex) {
     gameState.currentLevel = levelIndex;
     gameState.squares = [];
+    gameState.isExploding = false;
+    gameState.history = [];
+    gameState.future = [];
     gameArea.innerHTML = '';
 
     const level = levels[levelIndex];
     levelNumber.textContent = `${levelIndex + 1} - ${level.name}`;
+
+    // Aggiorna display del limite
+    if (maxValueDisplay) {
+        maxValueDisplay.textContent = level.maxValue || '∞';
+    }
 
     // Inizializza il cestino
     gameState.trashSlotsTotal = level.trashSlots || 0;
@@ -403,7 +534,11 @@ function createSquare(content, delay = 0) {
     }
 
     square.textContent = content.toString();
-    square.dataset.tooltip = content.getTooltip();
+
+    // Tooltip solo per operazioni, non per numeri
+    if (content.type === SquareType.OPERATION) {
+        square.dataset.tooltip = content.getTooltip();
+    }
 
     // Salva il contenuto nell'elemento
     square.squareContent = content;
@@ -444,7 +579,7 @@ function handleDragStart(e) {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', this.dataset.id);
 
-    // Nasconde l'elemento originale dopo che il browser ha catturato l'immagine drag
+    // Nasconde l'elemento originale dopo che il browser ha catturato l'immagine
     const element = this;
     requestAnimationFrame(() => {
         element.classList.add('dragging');
@@ -573,6 +708,7 @@ function combineSquares(dragged, target) {
 
     // Stessi contenuti: entrambi spariscono
     if (content1.equals(content2)) {
+        saveState();
         removeSquare(dragged);
         removeSquare(target);
         checkWin();
@@ -589,6 +725,7 @@ function combineSquares(dragged, target) {
         const targetSquare = isClone1 ? target : dragged;
         const targetContent = isClone1 ? content2 : content1;
 
+        saveState();
         // Rimuovi il clone
         removeSquare(cloneSquare);
 
@@ -626,6 +763,7 @@ function combineSquares(dragged, target) {
             return;
         }
 
+        saveState();
         // Rimuovi entrambi gli elementi
         removeSquare(dragged);
         removeSquare(target);
@@ -686,6 +824,7 @@ function combineSquares(dragged, target) {
         const isSqrtSquareCombo = (content1.value === OperationType.SQRT && content2.value === OperationType.SQUARE) ||
                                    (content1.value === OperationType.SQUARE && content2.value === OperationType.SQRT);
         if (isSqrtSquareCombo) {
+            saveState();
             removeSquare(dragged);
             removeSquare(target);
             checkWin();
@@ -707,6 +846,7 @@ function combineSquares(dragged, target) {
         const composed = composeOperations(content1, content2);
         if (composed.type === 'identity') {
             // Le operazioni si annullano
+            saveState();
             removeSquare(dragged);
             removeSquare(target);
             checkWin();
@@ -717,6 +857,13 @@ function combineSquares(dragged, target) {
         result.composedMultiplier = composed.multiplier;
     }
 
+    // Controlla overflow per risultati numerici
+    if (result && result.type === SquareType.NUMBER && checkOverflow(result.value)) {
+        triggerExplosion(result.value, target);
+        return;
+    }
+
+    saveState();
     // Salva la posizione del target prima di rimuoverlo
     const targetNextSibling = target.nextSibling;
 
@@ -746,7 +893,7 @@ function createSquareFromResult(content, insertBeforeElement = null) {
         else if (content.value < 0) square.classList.add('negative');
         else square.classList.add('zero');
         square.textContent = content.value.toString();
-        square.dataset.tooltip = `Numero: ${content.value}`;
+        // Nessun tooltip per numeri - si spiegano da soli
     } else {
         square.classList.add('operation');
         if (content.isSpecialOperation()) {
@@ -819,6 +966,7 @@ function trashSquare(square) {
         return false;
     }
 
+    saveState();
     gameState.trashSlotsUsed++;
     trashBin.classList.add('shaking');
     setTimeout(() => trashBin.classList.remove('shaking'), 300);
@@ -844,6 +992,8 @@ function updateUI() {
             trashBin.classList.remove('full');
         }
     }
+
+    updateUndoRedoButtons();
 }
 
 // Verifica vittoria
@@ -872,10 +1022,15 @@ function showMessage(title, text) {
 // Nascondi messaggio
 function hideMessage() {
     messageEl.classList.add('hidden');
+    messageEl.classList.remove('overflow');
 }
 
 // Event listeners per i pulsanti
 function setupEventListeners() {
+    // Undo/Redo
+    document.getElementById('btn-undo').addEventListener('click', undo);
+    document.getElementById('btn-redo').addEventListener('click', redo);
+
     btnReset.addEventListener('click', () => {
         loadLevel(gameState.currentLevel);
     });
@@ -897,6 +1052,18 @@ function setupEventListeners() {
 
     // Tastiera
     document.addEventListener('keydown', (e) => {
+        // Undo: Ctrl+Z
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+            e.preventDefault();
+            undo();
+            return;
+        }
+        // Redo: Ctrl+Y o Ctrl+Shift+Z
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey) || (e.key === 'Z' && e.shiftKey))) {
+            e.preventDefault();
+            redo();
+            return;
+        }
         if (e.key === 'r' || e.key === 'R') {
             loadLevel(gameState.currentLevel);
         }

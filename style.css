@@ -274,6 +274,11 @@ button#btn-reset {
     background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
 }
 
+button#btn-undo,
+button#btn-redo {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
 /* Messaggio */
 .message {
     position: fixed;
@@ -322,7 +327,7 @@ button#btn-reset {
     transition: opacity 0.2s ease;
 }
 
-.square:hover::after {
+.square[data-tooltip]:hover::after {
     opacity: 1;
 }
 
@@ -376,6 +381,44 @@ button#btn-reset {
 
 .trash-bin.shaking .trash-icon {
     animation: trash-shake 0.3s ease;
+}
+
+/* Display limite */
+.limit-display {
+    color: #e94560;
+    font-weight: bold;
+}
+
+/* Animazione esplosione */
+@keyframes explode {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    30% {
+        transform: scale(1.5);
+        background: linear-gradient(135deg, #ff0000 0%, #ff6600 100%);
+        box-shadow: 0 0 40px rgba(255, 0, 0, 0.8), 0 0 80px rgba(255, 100, 0, 0.6);
+    }
+    60% {
+        transform: scale(2);
+        opacity: 0.8;
+        filter: brightness(2);
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.square.exploding {
+    animation: explode 0.5s ease-out forwards;
+    z-index: 100;
+}
+
+/* Messaggio overflow - rosso per OVERFLOW */
+.message.overflow h2 {
+    color: #e94560;
 }
 
 /* Responsive */

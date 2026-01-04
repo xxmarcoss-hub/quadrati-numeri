@@ -286,6 +286,16 @@ function shuffleArray(array) {
     return result;
 }
 
+// Calcola il limite massimo per un livello
+// Formula: max(|valori|) × 5, minimo 50
+function calculateMaxValue(squares) {
+    const numbers = squares
+        .filter(sq => sq.type === SquareType.NUMBER)
+        .map(sq => Math.abs(sq.value));
+    const maxNum = numbers.length > 0 ? Math.max(...numbers) : 10;
+    return Math.max(50, maxNum * 5);
+}
+
 function generateLevel(targetValue, targetDifficulty, options = {}) {
     const { maxSquares = 20, allowedTransforms = null, name = null, preferNumbers = true } = options;
 
@@ -359,11 +369,13 @@ function generateLevel(targetValue, targetDifficulty, options = {}) {
         expansions++;
     }
 
+    const squares = shuffleArray(state.getSquares());
     return {
         name: name || `Livello`,
-        squares: shuffleArray(state.getSquares()),
+        squares: squares,
         solution: state.getSolution(),
-        generatedDifficulty: state.difficulty
+        generatedDifficulty: state.difficulty,
+        maxValue: calculateMaxValue(squares)
     };
 }
 
@@ -557,6 +569,7 @@ const levels = [
         output += `    {\n`;
         output += `        name: "${level.name}",\n`;
         output += `        solution: "${level.solution}",\n`;
+        output += `        maxValue: ${level.maxValue},\n`;
         output += `        squares: [\n`;
 
         for (const sq of level.squares) {

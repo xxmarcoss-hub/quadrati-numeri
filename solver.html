@@ -372,15 +372,35 @@
             }
 
             if (r.solutions.length > 0) {
-                const showCount = Math.min(r.solutions.length, 5);
-                html += `
-                    <div class="solutions-section">
-                        <h4>Soluzioni${r.solutions.length > 5 ? ` (prime ${showCount} di ${r.solutions.length})` : ''}</h4>
-                        ${r.solutions.slice(0, showCount).map((sol, i) => `
-                            <div class="solution-item">${i + 1}. ${sol.join(' → ')}</div>
-                        `).join('')}
-                    </div>
-                `;
+                const MAX_PER_GROUP = 5;
+                // Raggruppa per coppia finale
+                const groups = {};
+                for (const sol of r.solutions) {
+                    if (sol.length === 0) continue;
+                    const finalMove = sol[sol.length - 1];
+                    if (!groups[finalMove]) groups[finalMove] = [];
+                    groups[finalMove].push(sol);
+                }
+
+                html += `<div class="solutions-section">`;
+                html += `<h4>Soluzioni per coppia finale (max ${MAX_PER_GROUP} per gruppo)</h4>`;
+
+                for (const [finalMove, groupSolutions] of Object.entries(groups)) {
+                    const shown = groupSolutions.slice(0, MAX_PER_GROUP);
+                    const remaining = groupSolutions.length - shown.length;
+
+                    html += `<div style="margin: 15px 0;">`;
+                    html += `<strong style="color: #4facfe;">[${finalMove}]</strong> <span style="color: rgba(255,255,255,0.6);">(${groupSolutions.length} soluzioni)</span>`;
+                    html += shown.map((sol, i) => `
+                        <div class="solution-item">${i + 1}. ${sol.join(' → ')}</div>
+                    `).join('');
+                    if (remaining > 0) {
+                        html += `<div style="color: rgba(255,255,255,0.5); font-style: italic; padding: 5px 15px;">... e altre ${remaining} soluzioni</div>`;
+                    }
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
             }
 
             html += '</div>';

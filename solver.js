@@ -550,29 +550,17 @@ function analyzeAllLevels() {
     return results;
 }
 
-// Estrae il "finale" dall'ultima mossa (la coppia che sparisce per ultima)
-function extractFinale(lastMove) {
-    // L'ultima mossa è del tipo "4+4 spariscono" o "x2+x2 spariscono"
-    const match = lastMove.match(/^(.+)\+.+ spariscono$/);
-    if (match) {
-        return match[1];
-    }
-    return lastMove; // fallback
-}
-
-// Raggruppa le soluzioni per finale
-function groupSolutionsByFinale(solutions) {
+// Raggruppa soluzioni per coppia finale (ultima mossa)
+function groupSolutionsByFinalPair(solutions) {
     const groups = {};
 
     for (const sol of solutions) {
         if (sol.length === 0) continue;
-        const lastMove = sol[sol.length - 1];
-        const finale = extractFinale(lastMove);
-
-        if (!groups[finale]) {
-            groups[finale] = [];
+        const finalMove = sol[sol.length - 1];
+        if (!groups[finalMove]) {
+            groups[finalMove] = [];
         }
-        groups[finale].push(sol);
+        groups[finalMove].push(sol);
     }
 
     return groups;
@@ -580,6 +568,7 @@ function groupSolutionsByFinale(solutions) {
 
 // Formatta i risultati per la visualizzazione
 function formatResults(results) {
+    const MAX_SOLUTIONS_PER_GROUP = 5;
     let output = '';
 
     for (const r of results) {
@@ -598,20 +587,24 @@ function formatResults(results) {
                 output += `Prime mosse PERICOLOSE: ${r.unsafeFirstMoves.join(', ')}\n`;
             }
 
-            // Raggruppa soluzioni per finale
-            const groupedByFinale = groupSolutionsByFinale(r.solutions);
-            const finali = Object.keys(groupedByFinale);
+            // Raggruppa per coppia finale
+            const groups = groupSolutionsByFinalPair(r.solutions);
+            const groupKeys = Object.keys(groups);
 
-            output += `\nFinali diversi trovati: ${finali.length} (${finali.join(', ')})\n`;
+            output += `\nSoluzioni per coppia finale (max ${MAX_SOLUTIONS_PER_GROUP} per gruppo):\n`;
 
-            for (const finale of finali) {
-                const soluzioniFinale = groupedByFinale[finale];
-                const numDaMostrare = Math.min(5, soluzioniFinale.length);
+            for (const finalMove of groupKeys) {
+                const groupSolutions = groups[finalMove];
+                const shown = groupSolutions.slice(0, MAX_SOLUTIONS_PER_GROUP);
+                const remaining = groupSolutions.length - shown.length;
 
-                output += `\n--- Finale: ${finale}+${finale} (${soluzioniFinale.length} soluzioni, prime ${numDaMostrare}) ---\n`;
+                output += `\n  [${finalMove}] (${groupSolutions.length} soluzioni):\n`;
+                shown.forEach((sol, i) => {
+                    output += `    ${i + 1}. ${sol.join(' -> ')}\n`;
+                });
 
-                for (let i = 0; i < numDaMostrare; i++) {
-                    output += `  ${i + 1}. ${soluzioniFinale[i].join(' -> ')}\n`;
+                if (remaining > 0) {
+                    output += `    ... e altre ${remaining} soluzioni\n`;
                 }
             }
         }
