@@ -274,6 +274,11 @@ button#btn-reset {
     background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
 }
 
+button#btn-undo,
+button#btn-redo {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
 /* Messaggio */
 .message {
     position: fixed;
