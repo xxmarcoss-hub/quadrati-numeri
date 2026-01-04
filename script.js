@@ -579,23 +579,7 @@ function handleDragStart(e) {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', this.dataset.id);
 
-    // Crea un clone isolato per l'immagine di drag
-    // Questo evita che vengano catturati elementi adiacenti
-    const clone = this.cloneNode(true);
-    clone.style.position = 'absolute';
-    clone.style.top = '-9999px';
-    clone.style.left = '-9999px';
-    clone.style.width = this.offsetWidth + 'px';
-    clone.style.height = this.offsetHeight + 'px';
-    document.body.appendChild(clone);
-
-    // Usa il clone come immagine di drag
-    e.dataTransfer.setDragImage(clone, this.offsetWidth / 2, this.offsetHeight / 2);
-
-    // Rimuovi il clone dopo che il browser ha catturato l'immagine
-    setTimeout(() => clone.remove(), 0);
-
-    // Nasconde l'elemento originale
+    // Nasconde l'elemento originale dopo che il browser ha catturato l'immagine
     const element = this;
     requestAnimationFrame(() => {
         element.classList.add('dragging');
