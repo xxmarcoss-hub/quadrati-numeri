@@ -218,12 +218,25 @@ function canApplyOperation(num, operationContent) {
         return Number.isInteger(sqrt);
     }
 
-    // Divisori: solo numeri interi > 1, limite a 100 per evitare troppi divisori
+    // Divisori: solo numeri composti (no primi), interi > 1, limite a 100
     if (opValue === OperationType.DIVISORS) {
-        return Number.isInteger(num) && num > 1 && num <= 100;
+        if (!Number.isInteger(num) || num <= 1 || num > 100) return false;
+        // Escludi numeri primi: i fattori primi sarebbero solo il numero stesso
+        return !isPrime(num);
     }
 
     // Tutte le altre operazioni sono sempre applicabili
+    return true;
+}
+
+// Funzione per verificare se un numero è primo
+function isPrime(num) {
+    if (num < 2) return false;
+    if (num === 2) return true;
+    if (num % 2 === 0) return false;
+    for (let i = 3; i * i <= num; i += 2) {
+        if (num % i === 0) return false;
+    }
     return true;
 }
 

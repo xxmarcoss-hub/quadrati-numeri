@@ -1,6 +1,7 @@
 /**
  * Quadrati Numeri - Solver
  * Calcola tutte le soluzioni possibili per ogni livello
+ * Supporta tutte le 17 operazioni
  */
 
 // Rappresentazione canonica di un elemento
@@ -15,7 +16,12 @@ function elementToString(elem) {
     return `O:${elem.value}`;
 }
 
-// Ottieni il moltiplicatore di un'operazione
+// Verifica se un'operazione è speciale (non componibile)
+function solverIsSpecialOperation(opValue) {
+    return SpecialOperations.includes(opValue);
+}
+
+// Ottieni il moltiplicatore di un'operazione (solo per operazioni componibili)
 function getOperationMultiplier(elem) {
     if (elem.composedMultiplier !== undefined) {
         return elem.composedMultiplier;
@@ -24,12 +30,119 @@ function getOperationMultiplier(elem) {
         case OperationType.MULTIPLY_2: return 2;
         case OperationType.MULTIPLY_3: return 3;
         case OperationType.NEGATE: return -1;
+        case OperationType.DIVIDE_2: return 0.5;
+        case OperationType.DIVIDE_3: return 1/3;
         default:
             // Gestisce operazioni come 'x6'
             if (typeof elem.value === 'string' && elem.value.startsWith('x')) {
                 return parseInt(elem.value.substring(1));
             }
-            return 1;
+            if (typeof elem.value === 'string' && elem.value.startsWith('/')) {
+                return 1 / parseInt(elem.value.substring(1));
+            }
+            return null; // Operazione speciale, non ha moltiplicatore
+    }
+}
+
+// Verifica se un numero è primo
+function solverIsPrime(num) {
+    if (num < 2) return false;
+    if (num === 2) return true;
+    if (num % 2 === 0) return false;
+    for (let i = 3; i * i <= num; i += 2) {
+        if (num % i === 0) return false;
+    }
+    return true;
+}
+
+// Scomponi in fattori primi
+function solverPrimeFactors(n) {
+    if (n <= 1) return [];
+    const factors = [];
+    let num = n;
+    for (let p = 2; p * p <= num; p++) {
+        while (num % p === 0) {
+            factors.push(p);
+            num /= p;
+        }
+    }
+    if (num > 1) factors.push(num);
+    return factors;
+}
+
+// Verifica se un'operazione può essere applicata a un numero
+function solverCanApply(num, opValue) {
+    switch (opValue) {
+        case OperationType.DIVIDE_2:
+            return num % 2 === 0;
+        case OperationType.DIVIDE_3:
+            return num % 3 === 0;
+        case OperationType.FACTORIAL:
+            return Number.isInteger(num) && num >= 1 && num <= 6;
+        case OperationType.POW_2:
+            return Number.isInteger(num) && num >= 1 && num <= 10;
+        case OperationType.POW_3:
+            return Number.isInteger(num) && num >= 1 && num <= 6;
+        case OperationType.SQRT:
+            if (num < 0) return false;
+            const sqrt = Math.sqrt(num);
+            return Number.isInteger(sqrt);
+        case OperationType.DIVISORS:
+            return Number.isInteger(num) && num > 1 && num <= 100 && !solverIsPrime(num);
+        default:
+            return true;
+    }
+}
+
+// Applica un'operazione a un numero
+function solverApplyOp(num, opValue) {
+    const factorials = [1, 1, 2, 6, 24, 120, 720];
+
+    switch (opValue) {
+        case OperationType.MULTIPLY_2: return num * 2;
+        case OperationType.MULTIPLY_3: return num * 3;
+        case OperationType.NEGATE: return -num;
+        case OperationType.DIVIDE_2: return num / 2;
+        case OperationType.DIVIDE_3: return num / 3;
+        case OperationType.ABS: return Math.abs(num);
+        case OperationType.SQUARE: return num * num;
+        case OperationType.FLIP: {
+            const sign = num < 0 ? -1 : 1;
+            const flipped = parseInt(Math.abs(num).toString().split('').reverse().join(''), 10);
+            return sign * flipped;
+        }
+        case OperationType.SUM_DIGITS: {
+            const sign = num < 0 ? -1 : 1;
+            const sum = Math.abs(num).toString().split('').reduce((acc, d) => acc + parseInt(d, 10), 0);
+            return sign * sum;
+        }
+        case OperationType.SIGN:
+            return num > 0 ? 1 : (num < 0 ? -1 : 0);
+        case OperationType.FACTORIAL:
+            return factorials[num];
+        case OperationType.POW_2:
+            return Math.pow(2, num);
+        case OperationType.POW_3:
+            return Math.pow(3, num);
+        case OperationType.MOD_2:
+            return ((num % 2) + 2) % 2;
+        case OperationType.MOD_3:
+            return ((num % 3) + 3) % 3;
+        case OperationType.MOD_5:
+            return ((num % 5) + 5) % 5;
+        case OperationType.MOD_10:
+            return ((num % 10) + 10) % 10;
+        case OperationType.SQRT:
+            return Math.sqrt(num);
+        default:
+            // Operazioni composte (es. 'x6')
+            if (typeof opValue === 'string' && opValue.startsWith('x')) {
+                return num * parseInt(opValue.substring(1));
+            }
+            if (typeof opValue === 'string' && opValue.startsWith('/')) {
+                return num / parseInt(opValue.substring(1));
+            }
+            return num;
     }
 }
 
@@ -39,51 +152,127 @@ function elementsEqual(a, b) {
     if (a.type === SquareType.NUMBER) {
         return a.value === b.value;
     }
-    // Per operazioni, confronta i moltiplicatori
-    return getOperationMultiplier(a) === getOperationMultiplier(b);
+    // Per operazioni speciali, devono essere identiche
+    if (solverIsSpecialOperation(a.value) || solverIsSpecialOperation(b.value)) {
+        return a.value === b.value;
+    }
+    // Per operazioni componibili, confronta i moltiplicatori
+    const m1 = getOperationMultiplier(a);
+    const m2 = getOperationMultiplier(b);
+    return m1 !== null && m2 !== null && Math.abs(m1 - m2) < 0.0001;
 }
 
-// Combina due elementi e restituisce il risultato (o null se si eliminano)
+// Combina due elementi e restituisce il risultato
+// Ritorna: { result: [...elementi], eliminated: boolean }
 function combineElements(a, b) {
     // Elementi uguali: si eliminano
     if (elementsEqual(a, b)) {
-        return null; // Entrambi spariscono
+        return { result: [], eliminated: true };
+    }
+
+    // Caso speciale: √ + x² si annullano
+    if (a.type === SquareType.OPERATION && b.type === SquareType.OPERATION) {
+        if ((a.value === OperationType.SQRT && b.value === OperationType.SQUARE) ||
+            (a.value === OperationType.SQUARE && b.value === OperationType.SQRT)) {
+            return { result: [], eliminated: true };
+        }
     }
 
     // Numero + Numero = Somma
     if (a.type === SquareType.NUMBER && b.type === SquareType.NUMBER) {
-        return { type: SquareType.NUMBER, value: a.value + b.value };
+        return { result: [{ type: SquareType.NUMBER, value: a.value + b.value }], eliminated: false };
     }
 
-    // Numero + Operazione (o viceversa)
+    // Numero + Operazione
     if (a.type === SquareType.NUMBER && b.type === SquareType.OPERATION) {
-        const mult = getOperationMultiplier(b);
-        return { type: SquareType.NUMBER, value: a.value * mult };
+        return applyOperationToNumber(a.value, b);
     }
     if (a.type === SquareType.OPERATION && b.type === SquareType.NUMBER) {
-        const mult = getOperationMultiplier(a);
-        return { type: SquareType.NUMBER, value: b.value * mult };
+        return applyOperationToNumber(b.value, a);
     }
 
-    // Operazione + Operazione = Composizione
+    // Operazione + Operazione
     if (a.type === SquareType.OPERATION && b.type === SquareType.OPERATION) {
-        const m1 = getOperationMultiplier(a);
-        const m2 = getOperationMultiplier(b);
-        const result = m1 * m2;
+        return combineOperations(a, b);
+    }
 
-        // Se il risultato è 1 (identità), entrambi spariscono
-        if (result === 1) {
-            return null;
-        }
+    return null; // Combinazione non valida
+}
 
+// Applica un'operazione a un numero
+function applyOperationToNumber(num, op) {
+    const opValue = op.composedMultiplier !== undefined ? `x${op.composedMultiplier}` : op.value;
+
+    // Verifica se applicabile
+    if (!solverCanApply(num, opValue)) {
+        return null; // Non applicabile
+    }
+
+    // Caso speciale: CLONE duplica l'elemento
+    if (opValue === OperationType.CLONE) {
         return {
-            type: SquareType.OPERATION,
-            value: `x${result}`,
-            composedMultiplier: result
+            result: [
+                { type: SquareType.NUMBER, value: num },
+                { type: SquareType.NUMBER, value: num }
+            ],
+            eliminated: false
         };
     }
 
-    return null;
+    // Caso speciale: DIVISORS scompone in fattori primi
+    if (opValue === OperationType.DIVISORS) {
+        const factors = solverPrimeFactors(num);
+        return {
+            result: factors.map(f => ({ type: SquareType.NUMBER, value: f })),
+            eliminated: false
+        };
+    }
+
+    // Operazioni normali
+    const result = solverApplyOp(num, opValue);
+    return { result: [{ type: SquareType.NUMBER, value: result }], eliminated: false };
+}
+
+// Combina due operazioni
+function combineOperations(a, b) {
+    // Operazioni speciali non si compongono
+    if (solverIsSpecialOperation(a.value) || solverIsSpecialOperation(b.value)) {
+        return null; // Non possono combinarsi
+    }
+
+    const m1 = getOperationMultiplier(a);
+    const m2 = getOperationMultiplier(b);
+
+    if (m1 === null || m2 === null) return null;
+
+    const result = m1 * m2;
+
+    // Se il risultato è 1 (identità), entrambi spariscono
+    if (Math.abs(result - 1) < 0.0001) {
+        return { result: [], eliminated: true };
+    }
+
+    // Determina se il risultato è una divisione o moltiplicazione
+    if (result < 1 && result > 0) {
+        const divisor = Math.round(1 / result);
+        return {
+            result: [{
+                type: SquareType.OPERATION,
+                value: `/${divisor}`,
+                composedMultiplier: result
+            }],
+            eliminated: false
+        };
+    }
+
+    return {
+        result: [{
+            type: SquareType.OPERATION,
+            value: `x${Math.round(result)}`,
+            composedMultiplier: result
+        }],
+        eliminated: false
+    };
 }
 
 // Rappresentazione canonica di uno stato (multiset ordinato)
@@ -161,30 +350,43 @@ function applyMove(state, move) {
     }
 
     // Combina i due elementi
-    const result = combineElements(state[i], state[j]);
+    const combineResult = combineElements(state[i], state[j]);
 
-    // Se il risultato non è null, aggiungilo allo stato
-    if (result !== null) {
-        newState.push(result);
+    // Se la combinazione non è valida, ritorna null
+    if (combineResult === null) {
+        return null;
+    }
+
+    // Aggiungi i risultati allo stato (può essere 0, 1 o più elementi)
+    for (const elem of combineResult.result) {
+        newState.push(elem);
     }
 
     return newState;
 }
 
 // Descrizione della mossa in formato leggibile
-function getMoveDescription(elem1, elem2, result) {
+function getMoveDescription(elem1, elem2, combineResult) {
     const e1 = elem1.type === SquareType.NUMBER ? elem1.value : elem1.value;
     const e2 = elem2.type === SquareType.NUMBER ? elem2.value : elem2.value;
 
-    if (result === null) {
+    // Elementi eliminati (uguali o annullamento)
+    if (combineResult === null || combineResult.result.length === 0) {
         return `${e1}+${e2} spariscono`;
     }
 
-    const r = result.type === SquareType.NUMBER ? result.value : result.value;
-    if (elem1.type === SquareType.NUMBER && elem2.type === SquareType.NUMBER) {
-        return `${e1}+${e2}=${r}`;
+    // Risultato singolo
+    if (combineResult.result.length === 1) {
+        const r = combineResult.result[0].value;
+        if (elem1.type === SquareType.NUMBER && elem2.type === SquareType.NUMBER) {
+            return `${e1}+${e2}=${r}`;
+        }
+        return `${e1}×${e2}=${r}`;
     }
-    return `${e1}×${e2}=${r}`;
+
+    // Risultati multipli (clone, divisori)
+    const results = combineResult.result.map(r => r.value).join(',');
+    return `${e1}×${e2}=[${results}]`;
 }
 
 // Algoritmo di backtracking per trovare tutte le soluzioni
@@ -212,6 +414,10 @@ function solve(state, path = [], solutions = [], visited = new Set(), trashSlots
     // Prova ogni mossa
     for (const move of moves) {
         const newState = applyMove(state, move);
+
+        // Se la mossa non è valida (es. operazione non applicabile), salta
+        if (newState === null) continue;
+
         let moveDesc;
         let newTrashSlots = trashSlotsRemaining;
 
@@ -237,6 +443,10 @@ function findSafeFirstMoves(state) {
 
     for (const move of moves) {
         const newState = applyMove(state, move);
+
+        // Se la mossa non è valida, salta
+        if (newState === null) continue;
+
         const solutions = [];
         solve(newState, [], solutions);
 
@@ -276,6 +486,10 @@ function analyzeLevel(levelIndex) {
 
     for (const move of firstMoves) {
         const newState = applyMove(initialState, move);
+
+        // Se la mossa non è valida, salta
+        if (newState === null) continue;
+
         const moveSolutions = [];
         const newTrashSlots = move.type === 'trash' ? trashSlots - 1 : trashSlots;
         solve(newState, [], moveSolutions, new Set(), newTrashSlots);

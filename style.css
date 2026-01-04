@@ -108,7 +108,21 @@ h1 {
 
 .square.drag-over {
     transform: scale(1.15);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 30px rgba(56, 239, 125, 0.8), 0 0 60px rgba(56, 239, 125, 0.4);
+    outline: 3px solid rgba(56, 239, 125, 0.9);
+    outline-offset: 2px;
+    animation: target-pulse 0.6s ease-in-out infinite;
+}
+
+@keyframes target-pulse {
+    0%, 100% {
+        transform: scale(1.15);
+        box-shadow: 0 0 30px rgba(56, 239, 125, 0.8), 0 0 60px rgba(56, 239, 125, 0.4);
+    }
+    50% {
+        transform: scale(1.2);
+        box-shadow: 0 0 40px rgba(56, 239, 125, 1), 0 0 80px rgba(56, 239, 125, 0.6);
+    }
 }
 
 /* Colori per i numeri - Azzurro */
