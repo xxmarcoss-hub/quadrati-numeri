@@ -550,8 +550,25 @@ function analyzeAllLevels() {
     return results;
 }
 
+// Raggruppa soluzioni per coppia finale (ultima mossa)
+function groupSolutionsByFinalPair(solutions) {
+    const groups = {};
+
+    for (const sol of solutions) {
+        if (sol.length === 0) continue;
+        const finalMove = sol[sol.length - 1];
+        if (!groups[finalMove]) {
+            groups[finalMove] = [];
+        }
+        groups[finalMove].push(sol);
+    }
+
+    return groups;
+}
+
 // Formatta i risultati per la visualizzazione
 function formatResults(results) {
+    const MAX_SOLUTIONS_PER_GROUP = 5;
     let output = '';
 
     for (const r of results) {
@@ -570,14 +587,25 @@ function formatResults(results) {
                 output += `Prime mosse PERICOLOSE: ${r.unsafeFirstMoves.join(', ')}\n`;
             }
 
-            if (r.totalSolutions <= 5) {
-                output += `\nSoluzioni:\n`;
-                r.solutions.forEach((sol, i) => {
-                    output += `  ${i + 1}. ${sol.join(' -> ')}\n`;
+            // Raggruppa per coppia finale
+            const groups = groupSolutionsByFinalPair(r.solutions);
+            const groupKeys = Object.keys(groups);
+
+            output += `\nSoluzioni per coppia finale (max ${MAX_SOLUTIONS_PER_GROUP} per gruppo):\n`;
+
+            for (const finalMove of groupKeys) {
+                const groupSolutions = groups[finalMove];
+                const shown = groupSolutions.slice(0, MAX_SOLUTIONS_PER_GROUP);
+                const remaining = groupSolutions.length - shown.length;
+
+                output += `\n  [${finalMove}] (${groupSolutions.length} soluzioni):\n`;
+                shown.forEach((sol, i) => {
+                    output += `    ${i + 1}. ${sol.join(' -> ')}\n`;
                 });
-            } else {
-                output += `\nPrima soluzione:\n`;
-                output += `  ${r.solutions[0].join(' -> ')}\n`;
+
+                if (remaining > 0) {
+                    output += `    ... e altre ${remaining} soluzioni\n`;
+                }
             }
         }
     }
