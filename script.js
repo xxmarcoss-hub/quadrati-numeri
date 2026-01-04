@@ -303,13 +303,49 @@ let gameState = {
     squares: [],
     draggedSquare: null,
     trashSlotsTotal: 0,
-    trashSlotsUsed: 0
+    trashSlotsUsed: 0,
+    isExploding: false
 };
+
+// Controlla se un valore supera il limite massimo del livello
+function checkOverflow(value) {
+    const level = levels[gameState.currentLevel];
+    const limit = level.maxValue || 9999;
+    return Math.abs(value) > limit;
+}
+
+// Attiva l'esplosione (game over)
+function triggerExplosion(value, square) {
+    if (gameState.isExploding) return;
+    gameState.isExploding = true;
+
+    const level = levels[gameState.currentLevel];
+    const limit = level.maxValue || 9999;
+
+    // Animazione esplosione sul quadrato
+    if (square) {
+        square.classList.add('exploding');
+    }
+
+    // Mostra messaggio di overflow
+    setTimeout(() => {
+        messageEl.classList.add('overflow');
+        showMessage('OVERFLOW!', `Limite superato: ${Math.abs(value)} > ${limit}`);
+
+        // Reset dopo 2 secondi
+        setTimeout(() => {
+            hideMessage();
+            gameState.isExploding = false;
+            loadLevel(gameState.currentLevel);
+        }, 2000);
+    }, 500);
+}
 
 // Elementi DOM
 const gameArea = document.getElementById('game-area');
 const levelNumber = document.getElementById('level-number');
 const squaresCount = document.getElementById('squares-count');
+const maxValueDisplay = document.getElementById('max-value');
 const btnReset = document.getElementById('btn-reset');
 const btnPrev = document.getElementById('btn-prev');
 const btnNext = document.getElementById('btn-next');
@@ -349,10 +385,16 @@ function shuffleArray(array) {
 function loadLevel(levelIndex) {
     gameState.currentLevel = levelIndex;
     gameState.squares = [];
+    gameState.isExploding = false;
     gameArea.innerHTML = '';
 
     const level = levels[levelIndex];
     levelNumber.textContent = `${levelIndex + 1} - ${level.name}`;
+
+    // Aggiorna display del limite
+    if (maxValueDisplay) {
+        maxValueDisplay.textContent = level.maxValue || '∞';
+    }
 
     // Inizializza il cestino
     gameState.trashSlotsTotal = level.trashSlots || 0;
@@ -717,6 +759,12 @@ function combineSquares(dragged, target) {
         result.composedMultiplier = composed.multiplier;
     }
 
+    // Controlla overflow per risultati numerici
+    if (result && result.type === SquareType.NUMBER && checkOverflow(result.value)) {
+        triggerExplosion(result.value, target);
+        return;
+    }
+
     // Salva la posizione del target prima di rimuoverlo
     const targetNextSibling = target.nextSibling;
 
@@ -872,6 +920,7 @@ function showMessage(title, text) {
 // Nascondi messaggio
 function hideMessage() {
     messageEl.classList.add('hidden');
+    messageEl.classList.remove('overflow');
 }
 
 // Event listeners per i pulsanti
