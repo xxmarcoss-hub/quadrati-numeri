@@ -327,7 +327,7 @@ button#btn-redo {
     transition: opacity 0.2s ease;
 }
 
-.square:hover::after {
+.square[data-tooltip]:hover::after {
     opacity: 1;
 }
 
