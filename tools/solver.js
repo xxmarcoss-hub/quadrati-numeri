@@ -643,3 +643,86 @@ function generateSummary(results) {
 
     return summary;
 }
+
+// Calcola il valore massimo assoluto in uno stato
+function getMaxAbsValue(state) {
+    let maxVal = 0;
+    for (const elem of state) {
+        if (elem.type === SquareType.NUMBER) {
+            maxVal = Math.max(maxVal, Math.abs(elem.value));
+        }
+    }
+    return maxVal;
+}
+
+// Risolve tracciando il valore massimo raggiunto durante ogni soluzione
+function solveWithMaxTracking(state, path = [], solutions = [], trashSlotsRemaining = 0, currentMax = 0) {
+    // Aggiorna il max con lo stato corrente
+    const stateMax = getMaxAbsValue(state);
+    const newMax = Math.max(currentMax, stateMax);
+
+    // Vittoria: nessun elemento rimasto
+    if (state.length === 0) {
+        solutions.push({ path: [...path], maxValue: newMax });
+        return;
+    }
+
+    // Genera tutte le mosse uniche
+    const moves = getUniqueMoves(state, trashSlotsRemaining);
+
+    if (moves.length === 0) return;
+
+    for (const move of moves) {
+        const newState = applyMove(state, move);
+        if (newState === null) continue;
+
+        let moveDesc;
+        let newTrashSlots = trashSlotsRemaining;
+
+        if (move.type === 'trash') {
+            const elemStr = move.element.type === SquareType.NUMBER
+                ? move.element.value
+                : move.element.value;
+            moveDesc = `Cestina ${elemStr}`;
+            newTrashSlots--;
+        } else {
+            const result = combineElements(move.elements[0], move.elements[1]);
+            moveDesc = getMoveDescription(move.elements[0], move.elements[1], result);
+        }
+
+        solveWithMaxTracking(newState, [...path, moveDesc], solutions, newTrashSlots, newMax);
+    }
+}
+
+// Calcola il maxValue ottimale per un livello
+// Restituisce il valore massimo raggiunto in qualsiasi soluzione valida
+function calculateOptimalMaxValue(levelOrSquares) {
+    let initialState;
+    let trashSlots = 0;
+
+    if (Array.isArray(levelOrSquares)) {
+        // Passato un array di squares direttamente
+        initialState = levelOrSquares.map(sq => ({ ...sq }));
+    } else {
+        // Passato un indice di livello
+        const level = levels[levelOrSquares];
+        initialState = level.squares.map(sq => ({ ...sq }));
+        trashSlots = level.trashSlots || 0;
+    }
+
+    const solutions = [];
+    solveWithMaxTracking(initialState, [], solutions, trashSlots, getMaxAbsValue(initialState));
+
+    if (solutions.length === 0) {
+        // Nessuna soluzione, fallback al vecchio metodo
+        const numbers = initialState
+            .filter(sq => sq.type === SquareType.NUMBER)
+            .map(sq => Math.abs(sq.value));
+        const maxNum = numbers.length > 0 ? Math.max(...numbers) : 10;
+        return Math.max(50, maxNum * 5);
+    }
+
+    // Trova il maxValue tra tutte le soluzioni
+    const allMaxValues = solutions.map(s => s.maxValue);
+    return Math.max(...allMaxValues);
+}

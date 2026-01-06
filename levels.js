@@ -57,7 +57,7 @@ const levels = [
     {
         name: "Prima Coppia",
         solution: "3+3 spariscono",
-        maxValue: 50,
+        maxValue: 3,
         squares: [
             { type: SquareType.NUMBER, value: 3 },
             { type: SquareType.NUMBER, value: 3 },
@@ -66,7 +66,7 @@ const levels = [
     {
         name: "Due Uguali",
         solution: "4+4 spariscono",
-        maxValue: 50,
+        maxValue: 4,
         squares: [
             { type: SquareType.NUMBER, value: 4 },
             { type: SquareType.NUMBER, value: 4 },
@@ -75,7 +75,7 @@ const levels = [
     {
         name: "Somma Base",
         solution: "4+1=5, 5+5 spariscono",
-        maxValue: 50,
+        maxValue: 5,
         squares: [
             { type: SquareType.NUMBER, value: 5 },
             { type: SquareType.NUMBER, value: 1 },
@@ -85,7 +85,7 @@ const levels = [
     {
         name: "Catena",
         solution: "2+4=6, 6+6 spariscono",
-        maxValue: 50,
+        maxValue: 6,
         squares: [
             { type: SquareType.NUMBER, value: 2 },
             { type: SquareType.NUMBER, value: 4 },
@@ -95,7 +95,7 @@ const levels = [
     {
         name: "Tre Numeri",
         solution: "-16+19=3, 1+2=3, 3+3 spariscono",
-        maxValue: 95,
+        maxValue: 19,
         squares: [
             { type: SquareType.NUMBER, value: 1 },
             { type: SquareType.NUMBER, value: 19 },
@@ -106,7 +106,7 @@ const levels = [
     {
         name: "Primi Passi",
         solution: "3+-21=-18, -18+22=4, 4+4 spariscono",
-        maxValue: 110,
+        maxValue: 22,
         squares: [
             { type: SquareType.NUMBER, value: -21 },
             { type: SquareType.NUMBER, value: 22 },
@@ -117,7 +117,7 @@ const levels = [
     {
         name: "Inizio",
         solution: "-17+22=5, -13+14=1, 4+1=5, 5+5 spariscono",
-        maxValue: 110,
+        maxValue: 22,
         squares: [
             { type: SquareType.NUMBER, value: 22 },
             { type: SquareType.NUMBER, value: 4 },
@@ -129,7 +129,7 @@ const levels = [
     {
         name: "Semplice",
         solution: "-13+15=2, 2+3=5, 1+5=6, 6+6 spariscono",
-        maxValue: 75,
+        maxValue: 16,
         squares: [
             { type: SquareType.NUMBER, value: 6 },
             { type: SquareType.NUMBER, value: -13 },
@@ -141,7 +141,7 @@ const levels = [
     {
         name: "Base",
         solution: "2+14=16, 1+-22=-21, 8+-21=-13, -13+16=3, 3+3 spariscono",
-        maxValue: 110,
+        maxValue: 22,
         squares: [
             { type: SquareType.NUMBER, value: 14 },
             { type: SquareType.NUMBER, value: 3 },
@@ -154,7 +154,7 @@ const levels = [
     {
         name: "Avvio",
         solution: "1+20=21, 1+-22=-21, 4+-21=-17, -17+21=4, 4+4 spariscono",
-        maxValue: 110,
+        maxValue: 22,
         squares: [
             { type: SquareType.NUMBER, value: 4 },
             { type: SquareType.NUMBER, value: -22 },
@@ -168,7 +168,7 @@ const levels = [
     {
         name: "Raddoppio",
         solution: "1×x3=3, 3+1=4, 4+4 spariscono",
-        maxValue: 50,
+        maxValue: 4,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_3 },
             { type: SquareType.NUMBER, value: 1 },
@@ -179,7 +179,7 @@ const levels = [
     {
         name: "Triplice",
         solution: "4+17=21, -16+21=5, 5+5 spariscono",
-        maxValue: 85,
+        maxValue: 17,
         squares: [
             { type: SquareType.NUMBER, value: 17 },
             { type: SquareType.NUMBER, value: -16 },
@@ -190,7 +190,7 @@ const levels = [
     {
         name: "Specchio",
         solution: "-5×+-=5, 5+1=6, 6+6 spariscono",
-        maxValue: 50,
+        maxValue: 6,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
             { type: SquareType.NUMBER, value: -5 },
@@ -201,7 +201,7 @@ const levels = [
     {
         name: "Doppio",
         solution: "14×x2=28, 1+-21=-20, -20+28=8, 8+8 spariscono",
-        maxValue: 105,
+        maxValue: 28,
         squares: [
             { type: SquareType.NUMBER, value: 14 },
             { type: SquareType.NUMBER, value: -21 },
@@ -213,7 +213,7 @@ const levels = [
     {
         name: "Moltiplicazione",
         solution: "4+5=9, 6+4=10, 9+1=10, 10+10 spariscono",
-        maxValue: 50,
+        maxValue: 6,
         squares: [
             { type: SquareType.NUMBER, value: 5 },
             { type: SquareType.NUMBER, value: 6 },
@@ -225,7 +225,7 @@ const levels = [
     {
         name: "Fattore Due",
         solution: "-19+22=3, 3+1=4, -4×+-=4, 4+4 spariscono",
-        maxValue: 110,
+        maxValue: 23,
         squares: [
             { type: SquareType.NUMBER, value: 22 },
             { type: SquareType.NUMBER, value: 1 },
@@ -237,7 +237,7 @@ const levels = [
     {
         name: "Fattore Tre",
         solution: "1+-6=-5, -5×+-=5, 5×+-=-5, -5×+-=5, 5+5 spariscono",
-        maxValue: 50,
+        maxValue: 6,
         squares: [
             { type: SquareType.NUMBER, value: -6 },
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
@@ -250,7 +250,7 @@ const levels = [
     {
         name: "Negativo",
         solution: "-19+25=6, -14+15=1, 3+1=4, 2+4=6, 6+6 spariscono",
-        maxValue: 125,
+        maxValue: 25,
         squares: [
             { type: SquareType.NUMBER, value: 15 },
             { type: SquareType.NUMBER, value: -19 },
@@ -263,7 +263,7 @@ const levels = [
     {
         name: "Inversione",
         solution: "-4×+-=4, 7+-15=-8, 4×x2=8, -8×+-=8, 8+8 spariscono",
-        maxValue: 75,
+        maxValue: 15,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_2 },
             { type: SquareType.NUMBER, value: -4 },
@@ -276,7 +276,7 @@ const levels = [
     {
         name: "Mix Base",
         solution: "-3×+-=3, 7×+-=-7, -7×+-=7, 7+3=10, -10×+-=10, 10+10 spariscono",
-        maxValue: 50,
+        maxValue: 10,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
@@ -290,7 +290,7 @@ const levels = [
     {
         name: "Catena Facile",
         solution: "4×x2=8, 8+15=23, 3+-7=-4, -4×+-=4, -19+23=4, 4+4 spariscono",
-        maxValue: 95,
+        maxValue: 19,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_2 },
             { type: SquareType.NUMBER, value: 4 },
@@ -304,7 +304,7 @@ const levels = [
     {
         name: "Somme",
         solution: "10+3=13, 18×+-=-18, -18+13=-5, -5×+-=5, -5×+-=5, 5+5 spariscono",
-        maxValue: 90,
+        maxValue: 18,
         squares: [
             { type: SquareType.NUMBER, value: 10 },
             { type: SquareType.NUMBER, value: 18 },
@@ -318,7 +318,7 @@ const levels = [
     {
         name: "Prodotti",
         solution: "-13×+-=13, 5+13=18, -17+24=7, 2×x3=6, 7+18=25, -19+25=6, 6+6 spariscono",
-        maxValue: 120,
+        maxValue: 24,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
             { type: SquareType.NUMBER, value: -19 },
@@ -333,7 +333,7 @@ const levels = [
     {
         name: "Combinazione",
         solution: "1+5=6, -20×+-=20, 6+20=26, -6×x3=-18, 6+2=8, -18+26=8, 8+8 spariscono",
-        maxValue: 100,
+        maxValue: 20,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
             { type: SquareType.NUMBER, value: -20 },
@@ -348,7 +348,7 @@ const levels = [
     {
         name: "Semplice Mix",
         solution: "-18+19=1, -13+14=1, 1+15=16, 1+9=10, -13+16=3, 3+7=10, 10+10 spariscono",
-        maxValue: 95,
+        maxValue: 34,
         squares: [
             { type: SquareType.NUMBER, value: -18 },
             { type: SquareType.NUMBER, value: 7 },
@@ -364,7 +364,7 @@ const levels = [
     {
         name: "Divisione",
         solution: "2×/2=1, -19+24=5, 5+1=6, 6+6 spariscono",
-        maxValue: 120,
+        maxValue: 24,
         squares: [
             { type: SquareType.NUMBER, value: 6 },
             { type: SquareType.NUMBER, value: 24 },
@@ -376,7 +376,7 @@ const levels = [
     {
         name: "Radice",
         solution: "7+1=8, -12+14=2, 6+2=8, 8+8 spariscono",
-        maxValue: 70,
+        maxValue: 14,
         squares: [
             { type: SquareType.NUMBER, value: -12 },
             { type: SquareType.NUMBER, value: 7 },
@@ -388,7 +388,7 @@ const levels = [
     {
         name: "Quadrato",
         solution: "6+3=9, -15+12=-3, -3×x²=9, 9+9 spariscono",
-        maxValue: 75,
+        maxValue: 15,
         squares: [
             { type: SquareType.NUMBER, value: 6 },
             { type: SquareType.NUMBER, value: 3 },
@@ -400,7 +400,7 @@ const levels = [
     {
         name: "Assoluto",
         solution: "-17+21=4, 6+4=10, 4+6=10, 10+10 spariscono",
-        maxValue: 105,
+        maxValue: 21,
         squares: [
             { type: SquareType.NUMBER, value: 6 },
             { type: SquareType.NUMBER, value: -17 },
@@ -412,7 +412,7 @@ const levels = [
     {
         name: "Catena Media",
         solution: "3+-27=-24, -24×+-=24, 1+11=12, 24×/2=12, 12+12 spariscono",
-        maxValue: 135,
+        maxValue: 27,
         squares: [
             { type: SquareType.NUMBER, value: 3 },
             { type: SquareType.NUMBER, value: -27 },
@@ -425,7 +425,7 @@ const levels = [
     {
         name: "Mix Operazioni",
         solution: "7+1=8, 11+5=16, 4+8=12, 4+12=16, 16+16 spariscono",
-        maxValue: 55,
+        maxValue: 12,
         squares: [
             { type: SquareType.NUMBER, value: 11 },
             { type: SquareType.NUMBER, value: 7 },
@@ -438,7 +438,7 @@ const levels = [
     {
         name: "Percorso",
         solution: "-20+23=3, 5+12=17, 4+17=21, 3+21=24, 24+24 spariscono",
-        maxValue: 120,
+        maxValue: 40,
         squares: [
             { type: SquareType.NUMBER, value: 12 },
             { type: SquareType.NUMBER, value: 5 },
@@ -451,7 +451,7 @@ const levels = [
     {
         name: "Strategia",
         solution: "5+13=18, -17+18=1, 1+5=6, 5+1=6, 6+6 spariscono",
-        maxValue: 85,
+        maxValue: 17,
         squares: [
             { type: SquareType.NUMBER, value: 5 },
             { type: SquareType.NUMBER, value: -17 },
@@ -464,7 +464,7 @@ const levels = [
     {
         name: "Calcolo",
         solution: "3+-21=-18, -18+16=-2, -2×|x|=2, 2+6=8, 5+3=8, 8+8 spariscono",
-        maxValue: 105,
+        maxValue: 21,
         squares: [
             { type: SquareType.NUMBER, value: -21 },
             { type: SquareType.NUMBER, value: 6 },
@@ -478,7 +478,7 @@ const levels = [
     {
         name: "Ragionamento",
         solution: "-17+19=2, -16+19=3, 2×x2=4, 3+2=5, 4+5=9, 9+9 spariscono",
-        maxValue: 95,
+        maxValue: 19,
         squares: [
             { type: SquareType.NUMBER, value: 9 },
             { type: SquareType.NUMBER, value: -16 },
@@ -492,7 +492,7 @@ const levels = [
     {
         name: "Intermedio",
         solution: "30×/3=10, -20+30=10, 10+-35=-25, 5+-25=-20, -20+30=10, 10+10 spariscono",
-        maxValue: 175,
+        maxValue: 35,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 },
             { type: SquareType.NUMBER, value: 5 },
@@ -506,7 +506,7 @@ const levels = [
     {
         name: "Bilanciamento",
         solution: "1×√=1, -9×|x|=9, 1+11=12, 1×x3=3, 3+9=12, 12+12 spariscono",
-        maxValue: 55,
+        maxValue: 11,
         squares: [
             { type: SquareType.NUMBER, value: -9 },
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_3 },
@@ -520,7 +520,7 @@ const levels = [
     {
         name: "Equilibrio",
         solution: "-128×x2=-256, 3+5=8, 8+7=15, -256×+-=256, 1+15=16, 256×√=16, 16+16 spariscono",
-        maxValue: 640,
+        maxValue: 256,
         squares: [
             { type: SquareType.NUMBER, value: 3 },
             { type: SquareType.NUMBER, value: 5 },
@@ -535,7 +535,7 @@ const levels = [
     {
         name: "Scelta",
         solution: "9+-47=-38, 1+9=10, 4+-38=-34, 10+-34=-24, -24×|x|=24, 3+21=24, 24+24 spariscono",
-        maxValue: 235,
+        maxValue: 47,
         squares: [
             { type: SquareType.NUMBER, value: 3 },
             { type: SquareType.NUMBER, value: 4 },
@@ -550,7 +550,7 @@ const levels = [
     {
         name: "Decisione",
         solution: "100×√=10, 2+5=7, 6+3=9, 7+10=17, 9+17=26, -20+26=6, 6+6 spariscono",
-        maxValue: 500,
+        maxValue: 100,
         squares: [
             { type: SquareType.NUMBER, value: 3 },
             { type: SquareType.NUMBER, value: 5 },
@@ -565,7 +565,7 @@ const levels = [
     {
         name: "Analisi",
         solution: "-4×+-=4, 1+4=5, 5+-13=-8, 12×x2=24, 24×/3=8, -8×+-=8, 8+8 spariscono",
-        maxValue: 65,
+        maxValue: 13,
         squares: [
             { type: SquareType.NUMBER, value: 1 },
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
@@ -580,7 +580,7 @@ const levels = [
     {
         name: "Valutazione",
         solution: "69×/3=23, 1+2=3, -1×x²=1, 6+3=9, 1+23=24, 24×/3=8, 8+1=9, 9+9 spariscono",
-        maxValue: 345,
+        maxValue: 69,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 },
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 },
@@ -596,7 +596,7 @@ const levels = [
     {
         name: "Approccio",
         solution: "-18+21=3, 3+-13=-10, 10×x2=20, 20×/2=10, -10×|x|=10, 10×x3=30, 30×/3=10, 10+10 spariscono",
-        maxValue: 105,
+        maxValue: 21,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 },
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_3 },
@@ -612,7 +612,7 @@ const levels = [
     {
         name: "Metodo",
         solution: "6+1=7, 2+61=63, 7+-24=-17, 63×/3=21, -17+21=4, 24×/2=12, 4×x3=12, 12+12 spariscono",
-        maxValue: 305,
+        maxValue: 67,
         squares: [
             { type: SquareType.NUMBER, value: 1 },
             { type: SquareType.NUMBER, value: -24 },
@@ -628,7 +628,7 @@ const levels = [
     {
         name: "Tecnica",
         solution: "-14+15=1, 529×√=23, 1+23=24, -51×/3=-17, -17+24=7, -16×+-=16, 9+7=16, 16+16 spariscono",
-        maxValue: 2645,
+        maxValue: 529,
         squares: [
             { type: SquareType.NUMBER, value: -16 },
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
@@ -645,7 +645,7 @@ const levels = [
     {
         name: "Flip",
         solution: "6+12=18, 18×/3=6, 6×x2=12, 6×x2=12, 12+12 spariscono",
-        maxValue: 60,
+        maxValue: 18,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 },
             { type: SquareType.NUMBER, value: 6 },
@@ -658,7 +658,7 @@ const levels = [
     {
         name: "Cifre",
         solution: "-31×flip=-13, -13+17=4, -4×x²=16, 4+12=16, 16+16 spariscono",
-        maxValue: 155,
+        maxValue: 31,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.SQUARE },
             { type: SquareType.NUMBER, value: -31 },
@@ -671,7 +671,7 @@ const levels = [
     {
         name: "Segno",
         solution: "-18+19=1, -11+13=2, 1+23=24, 2+22=24, 24+24 spariscono",
-        maxValue: 115,
+        maxValue: 42,
         squares: [
             { type: SquareType.NUMBER, value: 23 },
             { type: SquareType.NUMBER, value: -11 },
@@ -684,7 +684,7 @@ const levels = [
     {
         name: "Complesso",
         solution: "18×/2=9, 9+-27=-18, -18×|x|=18, 7+18=25, 25+25 spariscono",
-        maxValue: 135,
+        maxValue: 27,
         squares: [
             { type: SquareType.NUMBER, value: -27 },
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_2 },
@@ -697,7 +697,7 @@ const levels = [
     {
         name: "Difficile",
         solution: "-81×x2=-162, -162×+-=162, 162×/2=81, 81×/3=27, 27+27 spariscono",
-        maxValue: 405,
+        maxValue: 81,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_2 },
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 },
@@ -710,7 +710,7 @@ const levels = [
     {
         name: "Sfida",
         solution: "7+16=23, -5×+-=5, 6+21=27, 5+27=32, 23×flip=32, 32+32 spariscono",
-        maxValue: 105,
+        maxValue: 21,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.FLIP },
             { type: SquareType.NUMBER, value: 16 },
@@ -724,7 +724,7 @@ const levels = [
     {
         name: "Puzzle",
         solution: "5+10=15, 15×Σ=6, 3+20=23, 7+23=30, 6+30=36, 36+36 spariscono",
-        maxValue: 180,
+        maxValue: 36,
         squares: [
             { type: SquareType.NUMBER, value: 5 },
             { type: SquareType.NUMBER, value: 3 },
@@ -738,7 +738,7 @@ const levels = [
     {
         name: "Enigma",
         solution: "36×/3=12, 69×Σ=15, -7×+-=7, 15×/3=5, 7+5=12, 12+12 spariscono",
-        maxValue: 345,
+        maxValue: 69,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
             { type: SquareType.NUMBER, value: -7 },
@@ -752,7 +752,7 @@ const levels = [
     {
         name: "Rompicapo",
         solution: "-2×|x|=2, 2+28=30, 2+30=32, 1+15=16, 32×/2=16, 16+16 spariscono",
-        maxValue: 140,
+        maxValue: 28,
         squares: [
             { type: SquareType.NUMBER, value: 28 },
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_2 },
@@ -766,7 +766,7 @@ const levels = [
     {
         name: "Labirinto",
         solution: "-20+30=10, 2+7=9, 10+9=19, -24×+-=24, 5+19=24, 24+24 spariscono",
-        maxValue: 150,
+        maxValue: 30,
         squares: [
             { type: SquareType.NUMBER, value: 2 },
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
@@ -780,7 +780,7 @@ const levels = [
     {
         name: "Intrico",
         solution: "7+32=39, 4+39=43, 52×flip=25, 43×Σ=7, 81×flip=18, 7+18=25, 25+25 spariscono",
-        maxValue: 405,
+        maxValue: 88,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.FLIP },
             { type: SquareType.NUMBER, value: 7 },
@@ -795,7 +795,7 @@ const levels = [
     {
         name: "Nodo",
         solution: "7+19=26, -20+21=1, 8+1=9, 9+14=23, 4+23=27, 1+26=27, 27+27 spariscono",
-        maxValue: 105,
+        maxValue: 26,
         squares: [
             { type: SquareType.NUMBER, value: 19 },
             { type: SquareType.NUMBER, value: 1 },
@@ -810,7 +810,7 @@ const levels = [
     {
         name: "Groviglio",
         solution: "-13+15=2, 2+6=8, -24×+-=24, -15+19=4, 4+28=32, 8+24=32, 32+32 spariscono",
-        maxValue: 140,
+        maxValue: 47,
         squares: [
             { type: SquareType.NUMBER, value: -15 },
             { type: SquareType.NUMBER, value: -24 },
@@ -825,7 +825,7 @@ const levels = [
     {
         name: "Dedalo",
         solution: "2+26=28, 66×/2=33, -19+22=3, -20+28=8, 3+33=36, 8+28=36, 36+36 spariscono",
-        maxValue: 330,
+        maxValue: 122,
         squares: [
             { type: SquareType.NUMBER, value: 26 },
             { type: SquareType.NUMBER, value: 2 },
@@ -840,7 +840,7 @@ const levels = [
     {
         name: "Mistero",
         solution: "-17+19=2, 2+5=7, 7+3=10, 10+2=12, 30×/3=10, 10+2=12, 12+12 spariscono",
-        maxValue: 150,
+        maxValue: 30,
         squares: [
             { type: SquareType.NUMBER, value: 30 },
             { type: SquareType.NUMBER, value: -17 },
@@ -855,7 +855,7 @@ const levels = [
     {
         name: "Arcano",
         solution: "-20+29=9, -12+13=1, 1+9=10, 2+14=16, 4+-24=-20, -20+26=6, 10+6=16, 16+16 spariscono",
-        maxValue: 145,
+        maxValue: 33,
         squares: [
             { type: SquareType.NUMBER, value: 4 },
             { type: SquareType.NUMBER, value: 29 },
@@ -871,7 +871,7 @@ const levels = [
     {
         name: "Oscuro",
         solution: "3+1=4, 4+-11=-7, 2+-26=-24, -24×|x|=24, -7×+-=7, 7+3=10, 10+14=24, 24+24 spariscono",
-        maxValue: 130,
+        maxValue: 26,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.ABS },
             { type: SquareType.NUMBER, value: 3 },
@@ -887,7 +887,7 @@ const levels = [
     {
         name: "Profondo",
         solution: "8+2=10, 10+-25=-15, 4+48=52, 52×flip=25, -15+20=5, 5+10=15, 10+15=25, 25+25 spariscono",
-        maxValue: 240,
+        maxValue: 48,
         squares: [
             { type: SquareType.NUMBER, value: 2 },
             { type: SquareType.NUMBER, value: 10 },
@@ -903,7 +903,7 @@ const levels = [
     {
         name: "Arduo",
         solution: "1+2=3, 324×√=18, 3+10=13, 10+13=23, 18×x3=54, 4+23=27, 54×/2=27, 27+27 spariscono",
-        maxValue: 1620,
+        maxValue: 324,
         squares: [
             { type: SquareType.NUMBER, value: 4 },
             { type: SquareType.OPERATION, value: OperationType.SQRT },
@@ -919,7 +919,7 @@ const levels = [
     {
         name: "Impegnativo",
         solution: "16×√=4, -15+19=4, -15+20=5, 4+5=9, 361×√=19, 9+19=28, 4+28=32, 32+32 spariscono",
-        maxValue: 1805,
+        maxValue: 361,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.SQRT },
             { type: SquareType.NUMBER, value: 361 },
@@ -986,7 +986,7 @@ const levels = [
     {
         name: "Rigoroso",
         solution: "6+-23=-17, -17+15=-2, 10+-36=-26, -2×|x|=2, 2+-26=-24, 2+6=8, 8×x3=24, -24×|x|=24, 24+24 spariscono",
-        maxValue: 180,
+        maxValue: 36,
         squares: [
             { type: SquareType.NUMBER, value: 15 },
             { type: SquareType.NUMBER, value: 6 },
@@ -1021,7 +1021,7 @@ const levels = [
     {
         name: "Fattoriale",
         solution: "74×x3=222, 2+5=7, 222×x2=444, 7+17=24, 444×x2=888, 888×Σ=24, 24+24 spariscono",
-        maxValue: 370,
+        maxValue: 131,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.SUM_DIGITS },
             { type: SquareType.NUMBER, value: 2 },
@@ -1036,7 +1036,7 @@ const levels = [
     {
         name: "Potenza",
         solution: "-13+16=3, 49×flip=94, 3+94=97, 1+10=11, 11+97=108, 108×/3=36, 36+36 spariscono",
-        maxValue: 245,
+        maxValue: 61,
         squares: [
             { type: SquareType.NUMBER, value: 16 },
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 },
@@ -1051,7 +1051,7 @@ const levels = [
     {
         name: "Esponenziale",
         solution: "24×/3=8, 4+5=9, 8+47=55, 29×x2=58, 9+55=64, 6+58=64, 64+64 spariscono",
-        maxValue: 235,
+        maxValue: 81,
         squares: [
             { type: SquareType.NUMBER, value: 29 },
             { type: SquareType.NUMBER, value: 4 },
@@ -1066,7 +1066,7 @@ const levels = [
     {
         name: "Esperto",
         solution: "-17×+-=17, 1+17=18, 2+79=81, 18×x²=324, 324×√=18, 18×flip=81, 81+81 spariscono",
-        maxValue: 395,
+        maxValue: 81,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.NEGATE },
             { type: SquareType.NUMBER, value: 1 },
@@ -1081,7 +1081,7 @@ const levels = [
     {
         name: "Maestro",
         solution: "-48×/3=-16, -21×|x|=21, -92×|x|=92, 8+92=100, -16+21=5, 5+91=96, 4+96=100, 100+100 spariscono",
-        maxValue: 460,
+        maxValue: 92,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 },
             { type: SquareType.NUMBER, value: -48 },
@@ -1097,7 +1097,7 @@ const levels = [
     {
         name: "Virtuoso",
         solution: "-20+27=7, -92×|x|=92, 3+91=94, 7+9=16, 10+16=26, 28+92=120, 26+94=120, 120+120 spariscono",
-        maxValue: 460,
+        maxValue: 112,
         squares: [
             { type: SquareType.NUMBER, value: 28 },
             { type: SquareType.NUMBER, value: 9 },
@@ -1113,7 +1113,7 @@ const levels = [
     {
         name: "Genio",
         solution: "-13×+-=13, 6+18=24, -12+13=1, 1×√=1, 1×√=1, 1×n!=1, 1+23=24, 24+24 spariscono",
-        maxValue: 115,
+        maxValue: 24,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.SQRT },
             { type: SquareType.NUMBER, value: 18 },
@@ -1129,7 +1129,7 @@ const levels = [
     {
         name: "Prodigio",
         solution: "6+3=9, 8+3=11, 11+1=12, 9+-21=-12, -12×|x|=12, 12×x3=36, 12×x3=36, 36+36 spariscono",
-        maxValue: 105,
+        maxValue: 24,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.ABS },
             { type: SquareType.OPERATION, value: OperationType.MULTIPLY_3 },
@@ -1145,7 +1145,7 @@ const levels = [
     {
         name: "Campione",
         solution: "-69×/3=-23, 6+1=7, -23×|x|=23, -20+23=3, 6+3=9, 9+55=64, 1+56=57, 7+57=64, 64+64 spariscono",
-        maxValue: 345,
+        maxValue: 69,
         squares: [
             { type: SquareType.OPERATION, value: OperationType.DIVIDE_3 },
             { type: SquareType.NUMBER, value: -20 },

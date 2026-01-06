@@ -41,6 +41,318 @@ const SpecialOperations = [
     OperationType.SQRT, OperationType.CLONE, OperationType.DIVISORS
 ];
 
+// ============================================================
+// Funzioni del solver per calcolare maxValue ottimale
+// ============================================================
+
+function elementToString(elem) {
+    if (elem.type === SquareType.NUMBER) {
+        return `N:${elem.value}`;
+    }
+    if (elem.composedMultiplier !== undefined) {
+        return `O:x${elem.composedMultiplier}`;
+    }
+    return `O:${elem.value}`;
+}
+
+function solverIsSpecialOperation(opValue) {
+    return SpecialOperations.includes(opValue);
+}
+
+function getOperationMultiplier(elem) {
+    if (elem.composedMultiplier !== undefined) {
+        return elem.composedMultiplier;
+    }
+    switch (elem.value) {
+        case OperationType.MULTIPLY_2: return 2;
+        case OperationType.MULTIPLY_3: return 3;
+        case OperationType.NEGATE: return -1;
+        case OperationType.DIVIDE_2: return 0.5;
+        case OperationType.DIVIDE_3: return 1/3;
+        default:
+            if (typeof elem.value === 'string' && elem.value.startsWith('x')) {
+                return parseInt(elem.value.substring(1));
+            }
+            if (typeof elem.value === 'string' && elem.value.startsWith('/')) {
+                return 1 / parseInt(elem.value.substring(1));
+            }
+            return null;
+    }
+}
+
+function solverIsPrime(num) {
+    if (num < 2) return false;
+    if (num === 2) return true;
+    if (num % 2 === 0) return false;
+    for (let i = 3; i * i <= num; i += 2) {
+        if (num % i === 0) return false;
+    }
+    return true;
+}
+
+function solverPrimeFactors(n) {
+    if (n <= 1) return [];
+    const factors = [];
+    let num = n;
+    for (let p = 2; p * p <= num; p++) {
+        while (num % p === 0) {
+            factors.push(p);
+            num /= p;
+        }
+    }
+    if (num > 1) factors.push(num);
+    return factors;
+}
+
+function solverCanApply(num, opValue) {
+    switch (opValue) {
+        case OperationType.DIVIDE_2:
+            return num % 2 === 0;
+        case OperationType.DIVIDE_3:
+            return num % 3 === 0;
+        case OperationType.FACTORIAL:
+            return Number.isInteger(num) && num >= 1 && num <= 6;
+        case OperationType.POW_2:
+            return Number.isInteger(num) && num >= 1 && num <= 10;
+        case OperationType.POW_3:
+            return Number.isInteger(num) && num >= 1 && num <= 6;
+        case OperationType.SQRT:
+            if (num < 0) return false;
+            const sqrt = Math.sqrt(num);
+            return Number.isInteger(sqrt);
+        case OperationType.DIVISORS:
+            return Number.isInteger(num) && num > 1 && num <= 100 && !solverIsPrime(num);
+        default:
+            return true;
+    }
+}
+
+function solverApplyOp(num, opValue) {
+    const factorials = [1, 1, 2, 6, 24, 120, 720];
+    switch (opValue) {
+        case OperationType.MULTIPLY_2: return num * 2;
+        case OperationType.MULTIPLY_3: return num * 3;
+        case OperationType.NEGATE: return -num;
+        case OperationType.DIVIDE_2: return num / 2;
+        case OperationType.DIVIDE_3: return num / 3;
+        case OperationType.ABS: return Math.abs(num);
+        case OperationType.SQUARE: return num * num;
+        case OperationType.FLIP: {
+            const sign = num < 0 ? -1 : 1;
+            const flipped = parseInt(Math.abs(num).toString().split('').reverse().join(''), 10);
+            return sign * flipped;
+        }
+        case OperationType.SUM_DIGITS: {
+            const sign = num < 0 ? -1 : 1;
+            const sum = Math.abs(num).toString().split('').reduce((acc, d) => acc + parseInt(d, 10), 0);
+            return sign * sum;
+        }
+        case OperationType.SIGN:
+            return num > 0 ? 1 : (num < 0 ? -1 : 0);
+        case OperationType.FACTORIAL:
+            return factorials[num];
+        case OperationType.POW_2:
+            return Math.pow(2, num);
+        case OperationType.POW_3:
+            return Math.pow(3, num);
+        case OperationType.MOD_2:
+            return ((num % 2) + 2) % 2;
+        case OperationType.MOD_3:
+            return ((num % 3) + 3) % 3;
+        case OperationType.MOD_5:
+            return ((num % 5) + 5) % 5;
+        case OperationType.MOD_10:
+            return ((num % 10) + 10) % 10;
+        case OperationType.SQRT:
+            return Math.sqrt(num);
+        default:
+            if (typeof opValue === 'string' && opValue.startsWith('x')) {
+                return num * parseInt(opValue.substring(1));
+            }
+            if (typeof opValue === 'string' && opValue.startsWith('/')) {
+                return num / parseInt(opValue.substring(1));
+            }
+            return num;
+    }
+}
+
+function elementsEqual(a, b) {
+    if (a.type !== b.type) return false;
+    if (a.type === SquareType.NUMBER) {
+        return a.value === b.value;
+    }
+    if (solverIsSpecialOperation(a.value) || solverIsSpecialOperation(b.value)) {
+        return a.value === b.value;
+    }
+    const m1 = getOperationMultiplier(a);
+    const m2 = getOperationMultiplier(b);
+    return m1 !== null && m2 !== null && Math.abs(m1 - m2) < 0.0001;
+}
+
+function solverCombineOperations(a, b) {
+    if (solverIsSpecialOperation(a.value) || solverIsSpecialOperation(b.value)) {
+        return null;
+    }
+    const m1 = getOperationMultiplier(a);
+    const m2 = getOperationMultiplier(b);
+    if (m1 === null || m2 === null) return null;
+    const result = m1 * m2;
+    if (Math.abs(result - 1) < 0.0001) {
+        return { result: [], eliminated: true };
+    }
+    if (result < 1 && result > 0) {
+        const divisor = Math.round(1 / result);
+        return {
+            result: [{ type: SquareType.OPERATION, value: `/${divisor}`, composedMultiplier: result }],
+            eliminated: false
+        };
+    }
+    return {
+        result: [{ type: SquareType.OPERATION, value: `x${Math.round(result)}`, composedMultiplier: result }],
+        eliminated: false
+    };
+}
+
+function solverApplyOperationToNumber(num, op) {
+    const opValue = op.composedMultiplier !== undefined ? `x${op.composedMultiplier}` : op.value;
+    if (!solverCanApply(num, opValue)) return null;
+    if (opValue === OperationType.CLONE) {
+        return { result: [{ type: SquareType.NUMBER, value: num }, { type: SquareType.NUMBER, value: num }], eliminated: false };
+    }
+    if (opValue === OperationType.DIVISORS) {
+        const factors = solverPrimeFactors(num);
+        return { result: factors.map(f => ({ type: SquareType.NUMBER, value: f })), eliminated: false };
+    }
+    const result = solverApplyOp(num, opValue);
+    return { result: [{ type: SquareType.NUMBER, value: result }], eliminated: false };
+}
+
+function solverCombineElements(a, b) {
+    if (elementsEqual(a, b)) {
+        return { result: [], eliminated: true };
+    }
+    if (a.type === SquareType.OPERATION && b.type === SquareType.OPERATION) {
+        if ((a.value === OperationType.SQRT && b.value === OperationType.SQUARE) ||
+            (a.value === OperationType.SQUARE && b.value === OperationType.SQRT)) {
+            return { result: [], eliminated: true };
+        }
+    }
+    if (a.type === SquareType.NUMBER && b.type === SquareType.NUMBER) {
+        return { result: [{ type: SquareType.NUMBER, value: a.value + b.value }], eliminated: false };
+    }
+    if (a.type === SquareType.NUMBER && b.type === SquareType.OPERATION) {
+        return solverApplyOperationToNumber(a.value, b);
+    }
+    if (a.type === SquareType.OPERATION && b.type === SquareType.NUMBER) {
+        return solverApplyOperationToNumber(b.value, a);
+    }
+    if (a.type === SquareType.OPERATION && b.type === SquareType.OPERATION) {
+        return solverCombineOperations(a, b);
+    }
+    return null;
+}
+
+function getUniqueMoves(state) {
+    const moves = [];
+    const seenPairs = new Set();
+    for (let i = 0; i < state.length; i++) {
+        for (let j = i + 1; j < state.length; j++) {
+            const key1 = elementToString(state[i]);
+            const key2 = elementToString(state[j]);
+            const pairKey = [key1, key2].sort().join('|');
+            if (!seenPairs.has(pairKey)) {
+                seenPairs.add(pairKey);
+                moves.push({ indices: [i, j], elements: [state[i], state[j]] });
+            }
+        }
+    }
+    return moves;
+}
+
+function solverApplyMove(state, move) {
+    const newState = [];
+    const [i, j] = move.indices;
+    for (let k = 0; k < state.length; k++) {
+        if (k !== i && k !== j) {
+            newState.push({ ...state[k] });
+        }
+    }
+    const combineResult = solverCombineElements(state[i], state[j]);
+    if (combineResult === null) return null;
+    for (const elem of combineResult.result) {
+        newState.push(elem);
+    }
+    return newState;
+}
+
+function getMaxAbsValue(state) {
+    let maxVal = 0;
+    for (const elem of state) {
+        if (elem.type === SquareType.NUMBER) {
+            maxVal = Math.max(maxVal, Math.abs(elem.value));
+        }
+    }
+    return maxVal;
+}
+
+function stateToCanonical(state) {
+    return state.map(elementToString).sort().join(',');
+}
+
+// Versione iterativa con BFS per evitare stack overflow
+function solveWithMaxTrackingBFS(initialState) {
+    const solutions = [];
+    const queue = [{ state: initialState, maxVal: getMaxAbsValue(initialState) }];
+    const visited = new Set();
+    visited.add(stateToCanonical(initialState));
+
+    while (queue.length > 0) {
+        const { state, maxVal } = queue.shift();
+
+        // Vittoria
+        if (state.length === 0) {
+            solutions.push(maxVal);
+            continue;
+        }
+
+        const moves = getUniqueMoves(state);
+
+        for (const move of moves) {
+            const newState = solverApplyMove(state, move);
+            if (newState === null) continue;
+
+            const newMax = Math.max(maxVal, getMaxAbsValue(newState));
+            const canonical = stateToCanonical(newState);
+
+            if (!visited.has(canonical)) {
+                visited.add(canonical);
+                queue.push({ state: newState, maxVal: newMax });
+            }
+        }
+    }
+
+    return solutions;
+}
+
+function calculateOptimalMaxValue(squares) {
+    const initialState = squares.map(sq => ({ ...sq }));
+    const solutions = solveWithMaxTrackingBFS(initialState);
+
+    if (solutions.length === 0) {
+        // Fallback: nessuna soluzione trovata
+        const numbers = squares
+            .filter(sq => sq.type === SquareType.NUMBER)
+            .map(sq => Math.abs(sq.value));
+        const maxNum = numbers.length > 0 ? Math.max(...numbers) : 10;
+        return Math.max(50, maxNum * 5);
+    }
+
+    // Restituisce il maxValue tra tutte le soluzioni
+    return Math.max(...solutions);
+}
+
+// ============================================================
+
 // Trasformazioni inverse
 const InverseTransforms = {
     SUM: 'sum',
@@ -286,16 +598,6 @@ function shuffleArray(array) {
     return result;
 }
 
-// Calcola il limite massimo per un livello
-// Formula: max(|valori|) × 5, minimo 50
-function calculateMaxValue(squares) {
-    const numbers = squares
-        .filter(sq => sq.type === SquareType.NUMBER)
-        .map(sq => Math.abs(sq.value));
-    const maxNum = numbers.length > 0 ? Math.max(...numbers) : 10;
-    return Math.max(50, maxNum * 5);
-}
-
 function generateLevel(targetValue, targetDifficulty, options = {}) {
     const { maxSquares = 20, allowedTransforms = null, name = null, preferNumbers = true } = options;
 
@@ -375,7 +677,7 @@ function generateLevel(targetValue, targetDifficulty, options = {}) {
         squares: squares,
         solution: state.getSolution(),
         generatedDifficulty: state.difficulty,
-        maxValue: calculateMaxValue(squares)
+        maxValue: calculateOptimalMaxValue(squares)
     };
 }
 
