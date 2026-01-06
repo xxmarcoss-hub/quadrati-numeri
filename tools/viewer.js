@@ -163,7 +163,7 @@ function openModal(index) {
     });
 
     modalSolutionText.textContent = level.solution || 'Soluzione non documentata';
-    modalPlayLink.href = `index.html#level=${index}`;
+    modalPlayLink.href = `../index.html#level=${index}`;
 
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
