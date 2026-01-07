@@ -42,6 +42,14 @@ elif [ "$1" == "--bundle" ]; then
     echo "[4/4] AAB creato:"
     echo "  android/app/build/outputs/bundle/release/app-release.aab"
 
+# Build e installa su device
+elif [ "$1" == "--device" ]; then
+    echo "Building and installing on device..."
+    cd ..
+    npx cap run android
+    echo ""
+    echo "[4/4] App installata e avviata sul dispositivo!"
+
 # Clean build
 elif [ "$1" == "--clean" ]; then
     echo "Cleaning build..."
@@ -53,6 +61,7 @@ else
     echo "Uso: ./scripts/build-android.sh [opzione]"
     echo ""
     echo "Opzioni:"
+    echo "  --device    Build, installa e avvia su dispositivo/emulatore"
     echo "  --debug     Build APK debug"
     echo "  --release   Build APK release (unsigned)"
     echo "  --bundle    Build AAB per Play Store"
