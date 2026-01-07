@@ -16,7 +16,14 @@
     "build:ios:device": "npm run cap:sync && npx cap run ios",
     "build:android:device": "npm run cap:sync && npx cap run android",
     "open:ios": "npm run cap:sync && npx cap open ios",
-    "open:android": "npm run cap:sync && npx cap open android"
+    "open:android": "npm run cap:sync && npx cap open android",
+    "build:ios": "./scripts/build-ios.sh",
+    "build:ios:sim": "./scripts/build-ios.sh --simulator",
+    "build:ios:archive": "./scripts/build-ios.sh --archive",
+    "build:android": "./scripts/build-android.sh",
+    "build:android:debug": "./scripts/build-android.sh --debug",
+    "build:android:release": "./scripts/build-android.sh --release",
+    "build:android:bundle": "./scripts/build-android.sh --bundle"
   },
   "repository": {
     "type": "git",
