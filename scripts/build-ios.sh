@@ -33,19 +33,13 @@ if [ "$1" == "--simulator" ]; then
     echo ""
     echo "[4/4] Build completato per simulatore!"
 
-# Build per device (release)
+# Build e installa su device
 elif [ "$1" == "--device" ]; then
-    echo "Building for device..."
-    xcodebuild build \
-        -project App.xcodeproj \
-        -scheme App \
-        -configuration Release \
-        -destination 'generic/platform=iOS' \
-        CODE_SIGN_IDENTITY="" \
-        CODE_SIGNING_REQUIRED=NO \
-        | grep -E '^(Build|Compile|Link|error:|warning:|\*\*)' || true
+    echo "Building and installing on device..."
+    cd ../..
+    npx cap run ios
     echo ""
-    echo "[4/4] Build completato per device!"
+    echo "[4/4] App installata e avviata sul dispositivo!"
 
 # Build archive per distribuzione
 elif [ "$1" == "--archive" ]; then
@@ -66,7 +60,7 @@ else
     echo ""
     echo "Opzioni:"
     echo "  --simulator   Build per simulatore iOS"
-    echo "  --device      Build per dispositivo fisico (no code signing)"
+    echo "  --device      Build, installa e avvia su dispositivo fisico"
     echo "  --archive     Crea archive per distribuzione App Store"
     echo ""
     echo "Per aprire in Xcode: npm run open:ios"
