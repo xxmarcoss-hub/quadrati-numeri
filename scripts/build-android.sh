@@ -42,11 +42,22 @@ elif [ "$1" == "--bundle" ]; then
     echo "[4/4] AAB creato:"
     echo "  android/app/build/outputs/bundle/release/app-release.aab"
 
+# Lista dispositivi disponibili
+elif [ "$1" == "--list" ]; then
+    echo "Dispositivi disponibili:"
+    cd ..
+    npx cap run android --list
+
 # Build e installa su device
 elif [ "$1" == "--device" ]; then
-    echo "Building and installing on device..."
     cd ..
-    npx cap run android
+    if [ -n "$2" ]; then
+        echo "Building and installing on target: $2"
+        npx cap run android --target "$2"
+    else
+        echo "Building and installing on device..."
+        npx cap run android
+    fi
     echo ""
     echo "[4/4] App installata e avviata sul dispositivo!"
 
@@ -61,11 +72,13 @@ else
     echo "Uso: ./scripts/build-android.sh [opzione]"
     echo ""
     echo "Opzioni:"
-    echo "  --device    Build, installa e avvia su dispositivo/emulatore"
-    echo "  --debug     Build APK debug"
-    echo "  --release   Build APK release (unsigned)"
-    echo "  --bundle    Build AAB per Play Store"
-    echo "  --clean     Pulisci build precedenti"
+    echo "  --list              Elenca dispositivi disponibili"
+    echo "  --device [target]   Build, installa e avvia su dispositivo/emulatore"
+    echo "                      Se target non specificato, mostra menu interattivo"
+    echo "  --debug             Build APK debug"
+    echo "  --release           Build APK release (unsigned)"
+    echo "  --bundle            Build AAB per Play Store"
+    echo "  --clean             Pulisci build precedenti"
     echo ""
     echo "Per aprire in Android Studio: npm run open:android"
 fi
