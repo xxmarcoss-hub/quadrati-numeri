@@ -11,6 +11,19 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* iOS safe area support */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    /* Prevent pull-to-refresh and overscroll */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    /* Prevent text selection on iOS */
+    -webkit-user-select: none;
+    user-select: none;
+    /* Prevent touch callout */
+    -webkit-touch-callout: none;
 }
 
 .game-container {
@@ -104,6 +117,22 @@ h1 {
 
 .square.dragging {
     opacity: 0 !important;
+}
+
+/* Touch dragging - elemento originale semi-trasparente */
+.square.touch-dragging {
+    opacity: 0.3 !important;
+    transform: scale(0.95);
+}
+
+/* Clone per touch drag - sempre visibile */
+.touch-clone {
+    position: fixed !important;
+    pointer-events: none !important;
+    z-index: 9999 !important;
+    opacity: 0.9 !important;
+    transform: scale(1.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 .square.drag-over {

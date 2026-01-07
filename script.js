@@ -634,16 +634,19 @@ function handleTouchStart(e) {
     touchStartX = touch.clientX;
     touchStartY = touch.clientY;
 
-    // Crea clone per visualizzazione
+    // Crea clone per visualizzazione (iOS-friendly)
     touchClone = this.cloneNode(true);
-    touchClone.style.position = 'fixed';
-    touchClone.style.pointerEvents = 'none';
-    touchClone.style.opacity = '0.8';
-    touchClone.style.zIndex = '1000';
-    touchClone.classList.add('dragging');
+    touchClone.className = this.className.replace('appearing', '').trim();
+    touchClone.classList.add('touch-clone');
+    touchClone.classList.remove('dragging', 'touch-dragging');
+    touchClone.style.left = (touch.clientX - 40) + 'px';
+    touchClone.style.top = (touch.clientY - 40) + 'px';
+    touchClone.style.width = this.offsetWidth + 'px';
+    touchClone.style.height = this.offsetHeight + 'px';
     document.body.appendChild(touchClone);
 
-    this.classList.add('dragging');
+    // Usa classe specifica per touch (non nasconde completamente)
+    this.classList.add('touch-dragging');
 }
 
 function handleTouchMove(e) {
@@ -683,7 +686,7 @@ function handleTouchEnd(e) {
         touchClone = null;
     }
 
-    touchDraggedSquare.classList.remove('dragging');
+    touchDraggedSquare.classList.remove('touch-dragging');
     trashBin.classList.remove('drag-over');
 
     // Controlla se rilasciato sul cestino
