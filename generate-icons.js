@@ -2,15 +2,6 @@ const { createCanvas } = require('canvas');
 const fs = require('fs');
 const path = require('path');
 
-// Colori del gioco
-const COLORS = {
-  background: '#1a1a2e',
-  square1: '#e94560',
-  square2: '#0f3460',
-  square3: '#16213e',
-  text: '#ffffff'
-};
-
 function drawIcon(size) {
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext('2d');
