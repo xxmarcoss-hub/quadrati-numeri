@@ -2,19 +2,14 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Quadrati Numeri</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
         <header>
-            <h1>Quadrati Numeri</h1>
-            <div class="level-info">
-                <span>Livello: <span id="level-number">1</span></span>
-                <span>Quadrati: <span id="squares-count">0</span></span>
-                <span class="limit-display">Limite: <span id="max-value">50</span></span>
-            </div>
+            <div class="level-title" id="level-number">Livello 1</div>
         </header>
 
         <div id="game-area"></div>
@@ -31,6 +26,10 @@
                     <span id="trash-count" class="trash-count">0/0</span>
                 </div>
             </div>
+        </div>
+
+        <div class="limit-bottom">
+            Limite: <span id="max-value">50</span>
         </div>
 
         <div id="message" class="message hidden"></div>
