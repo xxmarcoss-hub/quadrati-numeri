@@ -315,10 +315,8 @@ button#btn-redo {
     z-index: 2000;
     animation: victory-pulse 0.5s ease infinite;
     /* Ensure visibility on mobile */
-    max-width: calc(100vw - 40px);
-    max-height: calc(100vh - 40px);
+    max-width: min(90vw, 400px);
     box-sizing: border-box;
-    margin: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .message h2 {
