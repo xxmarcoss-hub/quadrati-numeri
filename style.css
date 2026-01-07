@@ -30,11 +30,15 @@ body {
     width: 100%;
     max-width: 800px;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    width: 100%;
 }
 
 .nav-links {
@@ -56,28 +60,16 @@ header {
     color: #1a1a2e;
 }
 
-h1 {
+.level-title {
     color: #e94560;
-    font-size: 2.5rem;
-    text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
-    margin-bottom: 10px;
-}
-
-.level-info {
-    color: #fff;
-    font-size: 1.1rem;
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-}
-
-.level-info span {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px 16px;
-    border-radius: 20px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-shadow: 0 0 15px rgba(233, 69, 96, 0.4);
+    margin-bottom: 5px;
 }
 
 #game-area {
+    width: 100%;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
     min-height: 400px;
@@ -272,6 +264,7 @@ h1 {
 
 /* Controlli */
 .controls {
+    width: 100%;
     display: flex;
     justify-content: center;
     gap: 15px;
@@ -316,11 +309,16 @@ button#btn-redo {
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.9);
     color: #fff;
-    padding: 40px 60px;
+    padding: 30px 40px;
     border-radius: 20px;
     text-align: center;
     z-index: 2000;
     animation: victory-pulse 0.5s ease infinite;
+    /* Ensure visibility on mobile */
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 40px);
+    box-sizing: border-box;
+    margin: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .message h2 {
@@ -412,10 +410,20 @@ button#btn-redo {
     animation: trash-shake 0.3s ease;
 }
 
-/* Display limite */
-.limit-display {
+/* Display limite in basso */
+.limit-bottom {
+    text-align: center;
+    margin-top: 15px;
     color: #e94560;
+    font-size: 1rem;
     font-weight: bold;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 20px;
+    border-radius: 20px;
+    display: inline-block;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Animazione esplosione */

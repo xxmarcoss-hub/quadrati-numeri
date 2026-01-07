@@ -431,7 +431,6 @@ function updateUndoRedoButtons() {
 // Elementi DOM
 const gameArea = document.getElementById('game-area');
 const levelNumber = document.getElementById('level-number');
-const squaresCount = document.getElementById('squares-count');
 const maxValueDisplay = document.getElementById('max-value');
 const btnReset = document.getElementById('btn-reset');
 const btnPrev = document.getElementById('btn-prev');
@@ -478,7 +477,7 @@ function loadLevel(levelIndex) {
     gameArea.innerHTML = '';
 
     const level = levels[levelIndex];
-    levelNumber.textContent = `${levelIndex + 1} - ${level.name}`;
+    levelNumber.textContent = `${levelIndex + 1}. ${level.name}`;
 
     // Aggiorna display del limite
     if (maxValueDisplay) {
@@ -981,7 +980,6 @@ function trashSquare(square) {
 
 // Aggiorna UI
 function updateUI() {
-    squaresCount.textContent = gameState.squares.length;
     btnPrev.disabled = gameState.currentLevel === 0;
     btnNext.disabled = gameState.currentLevel === levels.length - 1;
 
