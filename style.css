@@ -304,9 +304,10 @@ button#btn-redo {
 /* Messaggio */
 .message {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
     background: rgba(0, 0, 0, 0.9);
     color: #fff;
     padding: 30px 40px;
@@ -314,7 +315,6 @@ button#btn-redo {
     text-align: center;
     z-index: 2000;
     animation: victory-pulse 0.5s ease infinite;
-    /* Ensure visibility on mobile */
     max-width: min(90vw, 400px);
     box-sizing: border-box;
 }
