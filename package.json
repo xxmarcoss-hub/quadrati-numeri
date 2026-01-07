@@ -1,0 +1,42 @@
+{
+  "name": "quadrati_numeri",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generate-100.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:web": "mkdir -p www && cp index.html style.css script.js levels.js www/",
+    "generate:icons": "node generate-icons.js",
+    "generate:splash": "node generate-splash.js",
+    "generate:assets": "npm run generate:icons && npm run generate:splash",
+    "cap:sync": "npm run build:web && npx cap sync",
+    "build:ios:device": "npm run cap:sync && npx cap run ios",
+    "build:android:device": "npm run cap:sync && npx cap run android",
+    "open:ios": "npm run cap:sync && npx cap open ios",
+    "open:android": "npm run cap:sync && npx cap open android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xxmarcoss-hub/quadrati-numeri.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/xxmarcoss-hub/quadrati-numeri/issues"
+  },
+  "homepage": "https://github.com/xxmarcoss-hub/quadrati-numeri#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0"
+  },
+  "devDependencies": {
+    "canvas": "^3.2.0"
+  }
+}
