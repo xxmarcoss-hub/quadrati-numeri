@@ -32,6 +32,30 @@ npm install
 | `npm run build:ios:device` | Build e installa su dispositivo/simulatore iOS |
 | `npm run build:android:device` | Build e installa su dispositivo/emulatore Android |
 | `npm run generate:assets` | Rigenera icone e splash screen |
+| `npm run build:ios:sim` | Build per simulatore iOS |
+| `npm run build:ios:archive` | Crea archive iOS per App Store |
+| `npm run build:android:debug` | Build APK debug Android |
+| `npm run build:android:release` | Build APK release Android (unsigned) |
+| `npm run build:android:bundle` | Build AAB per Google Play Store |
+
+### Script Bash
+
+Per un controllo più granulare, puoi usare direttamente gli script bash:
+
+```bash
+# iOS
+./scripts/build-ios.sh              # Mostra opzioni disponibili
+./scripts/build-ios.sh --simulator  # Build per simulatore
+./scripts/build-ios.sh --device     # Build per device (no code signing)
+./scripts/build-ios.sh --archive    # Crea archive per distribuzione
+
+# Android
+./scripts/build-android.sh          # Mostra opzioni disponibili
+./scripts/build-android.sh --debug  # APK debug
+./scripts/build-android.sh --release # APK release (unsigned)
+./scripts/build-android.sh --bundle # AAB per Play Store
+./scripts/build-android.sh --clean  # Pulisce build precedenti
+```
 
 ---
 
@@ -40,10 +64,15 @@ npm install
 ### iOS - Simulatore
 
 ```bash
-npm run build:ios:device
+npm run build:ios:sim
 ```
 
-Seleziona un simulatore dalla lista quando richiesto.
+Questo compila l'app e la rende disponibile nel simulatore iPhone 16.
+
+In alternativa, per selezionare manualmente un simulatore:
+```bash
+npm run build:ios:device
+```
 
 ### iOS - Dispositivo Fisico
 
@@ -83,6 +112,16 @@ npm run build:android:device
 
 ### iOS - App Store
 
+#### Opzione 1: Da linea di comando
+
+```bash
+npm run build:ios:archive
+```
+
+L'archive viene creato in `ios/build/QuadratiNumeri.xcarchive`. Poi aprilo in Xcode per distribuire.
+
+#### Opzione 2: Da Xcode
+
 1. **Apri Xcode:**
 ```bash
 npm run open:ios
@@ -114,6 +153,24 @@ npm run open:ios
    - Invia per la review
 
 ### Android - Google Play Store
+
+#### Opzione 1: Da linea di comando
+
+```bash
+# APK release (per test)
+npm run build:android:release
+
+# AAB per Play Store
+npm run build:android:bundle
+```
+
+I file vengono creati in:
+- APK: `android/app/build/outputs/apk/release/app-release-unsigned.apk`
+- AAB: `android/app/build/outputs/bundle/release/app-release.aab`
+
+**Nota:** Per firmare l'APK/AAB da linea di comando, configura il keystore in `android/app/build.gradle`.
+
+#### Opzione 2: Da Android Studio
 
 1. **Apri Android Studio:**
 ```bash
