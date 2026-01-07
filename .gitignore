@@ -1,1 +1,23 @@
 .DS_Store
+
+# Dependencies
+node_modules/
+
+# Build output
+www/
+
+# IDE
+.idea/
+*.xcworkspace/xcuserdata/
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+*.apk
+*.aab
+
+# iOS
+ios/App/Pods/
+*.ipa
+DerivedData/
