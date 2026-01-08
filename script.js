@@ -347,6 +347,7 @@ function triggerExplosion(value, square) {
 function saveState() {
     const state = {
         squares: gameState.squares.map(s => ({
+            id: s.id,
             type: s.content.type,
             value: s.content.value,
             composedMultiplier: s.content.composedMultiplier
@@ -365,6 +366,7 @@ function undo() {
     // Salva stato corrente per redo
     const currentState = {
         squares: gameState.squares.map(s => ({
+            id: s.id,
             type: s.content.type,
             value: s.content.value,
             composedMultiplier: s.content.composedMultiplier
@@ -385,6 +387,7 @@ function redo() {
     // Salva stato corrente per undo
     const currentState = {
         squares: gameState.squares.map(s => ({
+            id: s.id,
             type: s.content.type,
             value: s.content.value,
             composedMultiplier: s.content.composedMultiplier
@@ -398,20 +401,62 @@ function redo() {
     restoreState(nextState);
 }
 
-// Ripristina uno stato salvato
+// Ripristina uno stato salvato con diff-based rendering
 function restoreState(state) {
-    // Rimuovi tutti i quadrati correnti senza animazione
-    gameArea.innerHTML = '';
-    gameState.squares = [];
+    const diff = calculateStateDiff(gameState.squares, state);
+    const targetOrder = state.squares.map(s => s.id);
 
-    // Ricrea i quadrati dallo stato salvato
-    state.squares.forEach((sq, index) => {
-        const content = new SquareContent(sq.type, sq.value);
-        if (sq.composedMultiplier) {
-            content.composedMultiplier = sq.composedMultiplier;
+    // 1. Rimuovi quadrati che non devono più esistere (animazione undo-disappearing)
+    diff.toRemove.forEach(id => {
+        const squareData = gameState.squares.find(s => s.id === id);
+        if (squareData && squareData.element) {
+            squareData.element.classList.add('undo-disappearing');
+            setTimeout(() => {
+                if (squareData.element.parentNode) {
+                    squareData.element.remove();
+                }
+            }, 300);
         }
-        createSquare(content, index * 30);
     });
+    gameState.squares = gameState.squares.filter(s => !diff.toRemove.includes(s.id));
+
+    // 2. Aggiorna quadrati che cambiano valore (animazione morphing)
+    diff.toMorph.forEach(targetSq => {
+        const squareData = gameState.squares.find(s => s.id === targetSq.id);
+        if (squareData && squareData.element) {
+            updateSquareContent(squareData, targetSq);
+            squareData.element.classList.add('morphing');
+            setTimeout(() => {
+                squareData.element.classList.remove('morphing');
+            }, 350);
+        }
+    });
+
+    // 3. Aggiungi quadrati nella posizione corretta (animazione resurrecting)
+    const addDelay = diff.toRemove.length > 0 ? 150 : 0;
+    setTimeout(() => {
+        diff.toAdd.forEach((sq, i) => {
+            const content = new SquareContent(sq.type, sq.value);
+            if (sq.composedMultiplier) {
+                content.composedMultiplier = sq.composedMultiplier;
+            }
+            // Trova la posizione corretta nel DOM
+            const targetIndex = targetOrder.indexOf(sq.id);
+            const insertBeforeId = targetOrder.slice(targetIndex + 1).find(id =>
+                gameState.squares.some(s => s.id === id)
+            );
+            const insertBeforeEl = insertBeforeId
+                ? gameState.squares.find(s => s.id === insertBeforeId)?.element
+                : null;
+
+            createSquareAtPosition(content, sq.id, insertBeforeEl, i * 50, 'resurrecting');
+        });
+
+        // Riordina l'array gameState.squares secondo l'ordine target
+        setTimeout(() => {
+            gameState.squares.sort((a, b) => targetOrder.indexOf(a.id) - targetOrder.indexOf(b.id));
+        }, diff.toAdd.length * 50 + 100);
+    }, addDelay);
 
     // Ripristina cestino
     gameState.trashSlotsUsed = state.trashSlotsUsed;
@@ -426,6 +471,124 @@ function updateUndoRedoButtons() {
     const btnRedo = document.getElementById('btn-redo');
     if (btnUndo) btnUndo.disabled = gameState.history.length === 0;
     if (btnRedo) btnRedo.disabled = gameState.future.length === 0;
+}
+
+// Verifica se il contenuto di un quadrato è cambiato
+function hasContentChanged(current, target) {
+    return current.content.type !== target.type ||
+           current.content.value !== target.value ||
+           current.content.composedMultiplier !== target.composedMultiplier;
+}
+
+// Calcola le differenze tra stato corrente e stato target
+function calculateStateDiff(currentSquares, targetState) {
+    const currentIds = new Set(currentSquares.map(s => s.id));
+    const targetIds = new Set(targetState.squares.map(s => s.id));
+
+    const toRemove = currentSquares.filter(s => !targetIds.has(s.id)).map(s => s.id);
+    const toAdd = targetState.squares.filter(s => !currentIds.has(s.id));
+    const toMorph = targetState.squares.filter(s => {
+        if (!currentIds.has(s.id)) return false;
+        const current = currentSquares.find(c => c.id === s.id);
+        return current && hasContentChanged(current, s);
+    });
+
+    return { toRemove, toAdd, toMorph };
+}
+
+// Aggiorna il contenuto visivo di un quadrato esistente
+function updateSquareContent(squareData, newContentData) {
+    const content = new SquareContent(newContentData.type, newContentData.value);
+    if (newContentData.composedMultiplier) {
+        content.composedMultiplier = newContentData.composedMultiplier;
+    }
+
+    const el = squareData.element;
+
+    // Rimuovi classi di tipo precedente
+    el.classList.remove('number', 'operation', 'positive', 'negative', 'zero',
+                        'special', 'negate', 'divide', 'multiply');
+
+    // Applica nuove classi
+    if (content.type === SquareType.NUMBER) {
+        el.classList.add('number');
+        if (content.value > 0) el.classList.add('positive');
+        else if (content.value < 0) el.classList.add('negative');
+        else el.classList.add('zero');
+    } else {
+        el.classList.add('operation');
+        if (content.isSpecialOperation()) {
+            el.classList.add('special');
+        } else if (content.value === OperationType.NEGATE) {
+            el.classList.add('negate');
+        } else if (content.value === OperationType.DIVIDE_2 || content.value === OperationType.DIVIDE_3 ||
+                   (typeof content.value === 'string' && content.value.startsWith('/'))) {
+            el.classList.add('divide');
+        } else {
+            el.classList.add('multiply');
+        }
+    }
+
+    el.textContent = content.toString();
+
+    if (content.type === SquareType.OPERATION) {
+        el.dataset.tooltip = content.getTooltip();
+    } else {
+        delete el.dataset.tooltip;
+    }
+
+    el.squareContent = content;
+    squareData.content = content;
+}
+
+// Crea un quadrato nella posizione specificata (per undo/redo)
+function createSquareAtPosition(content, existingId, insertBeforeEl, delay = 0, animationClass = 'appearing') {
+    const square = document.createElement('div');
+    square.className = 'square';
+    square.draggable = true;
+
+    // Aggiungi classi per lo stile
+    if (content.type === SquareType.NUMBER) {
+        square.classList.add('number');
+        if (content.value > 0) square.classList.add('positive');
+        else if (content.value < 0) square.classList.add('negative');
+        else square.classList.add('zero');
+    } else {
+        square.classList.add('operation');
+        if (content.isSpecialOperation()) {
+            square.classList.add('special');
+        } else if (content.value === OperationType.NEGATE) {
+            square.classList.add('negate');
+        } else if (content.value === OperationType.DIVIDE_2 || content.value === OperationType.DIVIDE_3 ||
+                   (typeof content.value === 'string' && content.value.startsWith('/'))) {
+            square.classList.add('divide');
+        } else {
+            square.classList.add('multiply');
+        }
+    }
+
+    square.textContent = content.toString();
+
+    if (content.type === SquareType.OPERATION) {
+        square.dataset.tooltip = content.getTooltip();
+    }
+
+    square.squareContent = content;
+    square.dataset.id = existingId;
+    gameState.squares.push({ id: existingId, element: square, content });
+
+    setTimeout(() => {
+        square.classList.add(animationClass);
+        // Inserisce nella posizione corretta invece che alla fine
+        if (insertBeforeEl && insertBeforeEl.parentNode === gameArea) {
+            gameArea.insertBefore(square, insertBeforeEl);
+        } else {
+            gameArea.appendChild(square);
+        }
+        setupSquareDragEvents(square);
+    }, delay);
+
+    return square;
 }
 
 // Elementi DOM
